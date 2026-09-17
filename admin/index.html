@@ -219,14 +219,17 @@ async function load() {
       { name: "Installed from the browser prompt", count: ev("installed") },
     ].filter(x => x.count));
 
+    // sources, devices and countries for visits only: an action (starting the demo, sharing) is not another person
+    const pages = { include_paths: hits.filter(h => !h.event).map(h => String(h.path_id)) };
+    const byPage = (path, limit) => pages.include_paths.length ? api(path, { ...r, limit, ...pages }).catch(() => ({ stats: [] })) : Promise.resolve({ stats: [] });
     await sleep(250);
-    const refs = await api("/stats/toprefs", { ...r, limit: 10 }).catch(() => ({ stats: [] }));
+    const refs = await byPage("/stats/toprefs", 10);
     rows($("refs"), (refs.stats || []).map(s => ({ name: s.name || "Direct (typed or no referrer)", count: s.count })));
     await sleep(250);
-    const sys = await api("/stats/systems", { ...r, limit: 8 }).catch(() => ({ stats: [] }));
+    const sys = await byPage("/stats/systems", 8);
     rows($("systems"), (sys.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
     await sleep(250);
-    const loc = await api("/stats/locations", { ...r, limit: 10 }).catch(() => ({ stats: [] }));
+    const loc = await byPage("/stats/locations", 10);
     rows($("locations"), (loc.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
 
     $("status").textContent = `${demo ? "Sample data · " : ""}Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · counts are people, not clicks`;
