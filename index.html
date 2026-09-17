@@ -486,7 +486,9 @@ a.js:hover{border-color:var(--gold)}
 .installtip .row .btn{padding:.4rem .8rem;font-size:.9rem}
 /* opening, once per launch: a closed muṣḥaf settles in, its cover swings open, and the page reveals the
    basmala in Arabic, then in English, then the name. A tap skips it. */
-.splash{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--paper);animation:splashOut .45s ease 4.45s forwards;cursor:pointer}
+.splash{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:var(--paper);animation:splashOut .45s ease 4.45s forwards}
+.splashskip{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);font:700 .95rem/1 var(--ui);color:var(--ink);background:var(--sheet);border:1.5px solid var(--line);border-radius:999px;padding:.75rem 1.2rem;box-shadow:0 6px 18px rgba(0,0,0,.08);cursor:pointer;opacity:0;animation:fadeUp .3s ease .6s forwards;-webkit-tap-highlight-color:transparent}
+.splashskip span{color:var(--gold)}
 .splash .book{position:relative;width:min(72vw,300px);aspect-ratio:4 / 5;perspective:1400px;animation:bookIn .5s cubic-bezier(.2,.7,.2,1) 2s both;filter:drop-shadow(0 18px 24px rgba(0,0,0,.18))}
 .splash .leafp{position:absolute;inset:0;background:var(--sheet);border:1px solid var(--line);border-radius:4px 12px 12px 4px;display:grid;place-content:center;justify-items:center;gap:.55rem;text-align:center;padding:1.2rem 1.1rem;box-shadow:inset 10px 0 16px -12px rgba(0,0,0,.3)}
 .splash .bism{font:400 clamp(1.25rem,5.4vw,1.7rem)/1.9 var(--q);color:var(--ink);direction:rtl;opacity:0;animation:fadeUp .7s ease 2.75s forwards}
@@ -1166,6 +1168,7 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
     </div>
     <div class="cover"><span class="mark" lang="ar">۞</span><span class="cname">QuranFlow</span></div>
   </div>
+  <button type="button" class="splashskip" id="splashSkip">Skip intro <span aria-hidden="true">›</span></button>
 </div>
 <script>
 // The opening animation plays every time QuranFlow is opened: not on the one automatic reload when an update takes
@@ -1312,8 +1315,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=20c2c26d72"></script>
-<script src="app.js?v=20c2c26d72"></script>
+<script src="data/index.js?v=e3a3fdfc21"></script>
+<script src="app.js?v=e3a3fdfc21"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
