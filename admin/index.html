@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QuranFlow · Analytics</title>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://ahmedashmaig.goatcounter.com">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+/* QuranFlow's analytics, read from GoatCounter's API with a read-only key that stays in this browser. No counter
+   script on this page, so looking at the numbers never adds to them. */
+:root{--paper:#F6F1E4;--sheet:#FFFDF6;--ink:#1C1A17;--muted:#6B6453;--line:#E2D8C0;--gold:#8E6E33;--gold2:#D8B46A;--green:#0E5A45;--greensoft:#CFE5D8;--red:#B3261E;
+  --ui:"Alegreya Sans","Gill Sans","Segoe UI",system-ui,sans-serif;--display:"Alegreya",Georgia,serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:400 16px/1.45 var(--ui);padding:max(16px,env(safe-area-inset-top)) 16px 40px}
+.wrap{max-width:68rem;margin:0 auto;display:grid;gap:14px}
+h1{margin:0;font:700 clamp(1.6rem,5vw,2.1rem)/1.1 var(--display)}
+h2{margin:0 0 .5rem;font:700 1.08rem/1.2 var(--display)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:40px;height:50px;border-radius:3px 8px 8px 3px;background:linear-gradient(135deg,#1f7a5f,var(--green) 60%,#0a4535);border:2px solid var(--gold2);display:grid;place-items:center;color:var(--gold2);font:400 1.3rem/1 "Amiri Quran",serif}
+.lbl{font:700 .72rem/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.btn{font:700 .92rem/1 var(--ui);border:1.5px solid var(--green);background:var(--green);color:#fff;border-radius:999px;padding:.6rem 1rem;cursor:pointer}
+.btn.ghost{background:none;color:var(--green)}
+.ranges{display:flex;gap:6px;flex-wrap:wrap}
+.ranges button{font:700 .85rem/1 var(--ui);border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:.5rem .8rem;cursor:pointer}
+.ranges button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
+.kpi b{font:700 clamp(1.7rem,6vw,2.2rem)/1.05 var(--display);color:var(--green);font-variant-numeric:tabular-nums}
+.kpi span{font-size:.9rem;color:var(--ink)}
+.kpi small{font-size:.78rem;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:6px}
+.chart i{flex:1;min-width:2px;background:var(--greensoft);border-top:3px solid var(--green);border-radius:3px 3px 0 0;position:relative}
+.chart i:hover{background:var(--gold2)}
+.axis{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:4px}
+.rows{display:grid;gap:6px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.93rem}
+.row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .bar{grid-column:1 / -1;height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:-3px}
+.row .bar i{display:block;height:100%;background:var(--green)}
+.row b{font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);font-size:.9rem}
+.note{font-size:.85rem;color:var(--muted)}
+.login{max-width:30rem;margin:8vh auto 0;display:grid;gap:12px}
+.login ol{margin:0;padding-left:1.2rem;display:grid;gap:4px}
+.login input{width:100%;font:500 1rem var(--ui);padding:.7rem .8rem;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.err{color:var(--red);font-weight:700;font-size:.9rem}
+.status{font-size:.85rem;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.toggle{display:flex;align-items:center;gap:8px;font-size:.9rem}
+a{color:var(--green)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><div class="mark" aria-hidden="true">۞</div><div><span class="lbl">QuranFlow</span><h1>Analytics</h1></div></div>
+    <div class="ranges" id="ranges" hidden>
+      <button type="button" data-days="1">Today</button><button type="button" data-days="7" aria-pressed="true">7 days</button>
+      <button type="button" data-days="30">30 days</button><button type="button" data-days="90">90 days</button>
+    </div>
+  </div>
+
+  <form class="card login" id="login" hidden>
+    <h2>Log in</h2>
+    <p class="note">Paste a GoatCounter API key with read access. It is saved only in this browser, never on the site.</p>
+    <ol class="note">
+      <li>Open <a href="https://ahmedashmaig.goatcounter.com" target="_blank" rel="noopener">ahmedashmaig.goatcounter.com</a> and log in.</li>
+      <li>Settings (top right) › <b>API</b> › <b>New API token</b>.</li>
+      <li>Tick <b>Read statistics</b> only, create it, and copy the token.</li>
+    </ol>
+    <input type="password" id="key" placeholder="API token" autocomplete="off" spellcheck="false" aria-label="GoatCounter API token">
+    <button class="btn" type="submit">Show my analytics</button>
+    <p class="err" id="loginErr" hidden></p>
+  </form>
+
+  <div id="dash" hidden>
+    <div class="wrap">
+      <p class="status" id="status">Loading…</p>
+      <div class="kpis" id="kpis"></div>
+      <div class="card"><h2>Visitors per day</h2><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
+      <div class="grid2">
+        <div class="card"><h2>Where visitors come from</h2><div class="rows" id="refs"></div>
+          <p class="note">Tip: put <b>?ref=tiktok</b> or <b>?ref=instagram</b> on the links you post, so each one shows up here by name.</p></div>
+        <div class="card"><h2>The demo</h2><div class="rows" id="tour"></div></div>
+        <div class="card"><h2>Sharing</h2><div class="rows" id="share"></div></div>
+        <div class="card"><h2>Surahs opened</h2><div class="rows" id="surahs"></div></div>
+        <div class="card"><h2>How they open it</h2><div class="rows" id="opens"></div></div>
+        <div class="card"><h2>Devices</h2><div class="rows" id="systems"></div></div>
+        <div class="card"><h2>Countries</h2><div class="rows" id="locations"></div></div>
+      </div>
+      <div class="foot">
+        <label class="toggle"><input type="checkbox" id="skipMe"> Don't count my own visits on this device</label>
+        <span><a href="https://ahmedashmaig.goatcounter.com" target="_blank" rel="noopener">Full GoatCounter dashboard</a> · <button class="btn ghost" type="button" id="logout">Log out</button></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const API = "https://ahmedashmaig.goatcounter.com/api/v0";
+const KEY = "qf-admin-gc-key";
+const SURAHS = {9:"At-Tawbah",10:"Yunus",11:"Hud",12:"Yusuf",13:"Ar-Ra'd",14:"Ibrahim",15:"Al-Hijr",16:"An-Nahl",17:"Al-Isra",18:"Al-Kahf",19:"Maryam",20:"Taha",21:"Al-Anbya",22:"Al-Hajj",23:"Al-Mu'minun",24:"An-Nur",25:"Al-Furqan",26:"Ash-Shu'ara",27:"An-Naml",28:"Al-Qasas",29:"Al-'Ankabut",30:"Ar-Rum",31:"Luqman",32:"As-Sajdah",33:"Al-Ahzab",34:"Saba",35:"Fatir",36:"Ya-Sin",37:"As-Saffat",38:"Sad",39:"Az-Zumar",40:"Ghafir",41:"Fussilat",42:"Ash-Shuraa",43:"Az-Zukhruf",44:"Ad-Dukhan",45:"Al-Jathiyah",46:"Al-Ahqaf",47:"Muhammad",48:"Al-Fath",49:"Al-Hujurat",50:"Qaf",51:"Adh-Dhariyat",52:"At-Tur",53:"An-Najm",54:"Al-Qamar",55:"Ar-Rahman",56:"Al-Waqi'ah",57:"Al-Hadid",58:"Al-Mujadila",59:"Al-Hashr",60:"Al-Mumtahanah",61:"As-Saf",62:"Al-Jumu'ah",63:"Al-Munafiqun",64:"At-Taghabun",65:"At-Talaq",66:"At-Tahrim",67:"Al-Mulk",68:"Al-Qalam",69:"Al-Haqqah",70:"Al-Ma'arij",71:"Nuh",72:"Al-Jinn",73:"Al-Muzzammil",74:"Al-Muddaththir",75:"Al-Qiyamah",76:"Al-Insan",77:"Al-Mursalat",78:"An-Naba",79:"An-Nazi'at",80:"'Abasa",81:"At-Takwir",82:"Al-Infitar",83:"Al-Mutaffifin",84:"Al-Inshiqaq",85:"Al-Buruj",86:"At-Tariq",87:"Al-A'la",88:"Al-Ghashiyah",89:"Al-Fajr",90:"Al-Balad",91:"Ash-Shams",92:"Al-Layl",93:"Ad-Duhaa",94:"Ash-Sharh",95:"At-Tin",96:"Al-'Alaq",97:"Al-Qadr",98:"Al-Bayyinah",99:"Az-Zalzalah",100:"Al-'Adiyat",101:"Al-Qari'ah",102:"At-Takathur",103:"Al-'Asr",104:"Al-Humazah",105:"Al-Fil",106:"Quraysh",107:"Al-Ma'un",108:"Al-Kawthar",109:"Al-Kafirun",110:"An-Nasr",111:"Al-Masad",112:"Al-Ikhlas",113:"Al-Falaq",114:"An-Nas"};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+const demo = new URLSearchParams(location.search).has("demo");   // sample numbers, to see the layout without a key
+let days = 7;
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function api(path, params = {}) {
+  if (demo) return sample(path);
+  const u = new URL(API + path);
+  for (const [k, v] of Object.entries(params)) (Array.isArray(v) ? v : [v]).forEach(x => u.searchParams.append(k, x));
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const r = await fetch(u, { headers: { Authorization: "Bearer " + store.get(KEY), "Content-Type": "application/json" } });
+    if (r.status === 429) { await sleep(1100); continue; }   // GoatCounter allows a few requests a second
+    if (r.status === 401 || r.status === 403) throw Object.assign(new Error("That key was not accepted. Check it has Read statistics access."), { auth: true });
+    if (!r.ok) throw new Error(`GoatCounter answered ${r.status}`);
+    return r.json();
+  }
+  throw new Error("GoatCounter is busy; try again in a moment.");
+}
+const hour = d => { d = new Date(d); d.setMinutes(0, 0, 0); return d; };
+function range() {
+  const end = hour(Date.now() + 3600e3), start = new Date(end);
+  if (days === 1) start.setHours(0); else start.setDate(start.getDate() - days);
+  return { start: start.toISOString(), end: end.toISOString() };
+}
+
+// every path in the range: page views and events, following the pages GoatCounter returns
+async function allHits(r) {
+  const out = [];
+  for (let page = 0; page < 10; page++) {
+    const res = await api("/stats/hits", { ...r, limit: 100, exclude_paths: out.map(h => String(h.path_id)) });
+    out.push(...(res.hits || []));
+    if (!res.more) break;
+    await sleep(300);
+  }
+  return out;
+}
+
+function rows(el, list, empty = "Nothing yet.") {
+  const max = Math.max(1, ...list.map(x => x.count));
+  el.innerHTML = list.length ? list.map(x => `<div class="row"><span class="name" title="${esc(x.name)}">${esc(x.name)}</span><b>${x.count.toLocaleString()}</b>
+    <span class="bar"><i style="width:${(x.count / max * 100).toFixed(1)}%"></i></span></div>`).join("") : `<p class="empty">${esc(empty)}</p>`;
+}
+
+async function load() {
+  $("status").hidden = false; $("status").textContent = "Loading…";
+  try {
+    const r = range();
+    const total = await api("/stats/total", r); await sleep(250);
+    const hits = await allHits(r); await sleep(250);
+    const ev = name => hits.filter(h => h.event && h.path === name).reduce((t, h) => t + h.count, 0);
+    const evs = prefix => hits.filter(h => h.event && h.path.startsWith(prefix));
+    const pageviews = (total.total || 0) - (total.total_events || 0);
+    const shares = ["share-copy", "share-sheet", "share-whatsapp", "share-messages", "share-email"].reduce((t, k) => t + ev(k), 0);
+    const tourStarts = ev("tour-start-first-visit") + ev("tour-start-replay");
+    const kpi = (n, label, sub) => `<div class="kpi"><b>${Number(n).toLocaleString()}</b><span>${label}</span>${sub ? `<small>${sub}</small>` : ""}</div>`;
+    $("kpis").innerHTML = kpi(pageviews, "Visitors", "people who opened the site")
+      + kpi(ev("open-installed-app"), "Opened as an app", "from their home screen")
+      + kpi(ev("tour-finished"), "Watched the demo to the end", tourStarts ? `${Math.round(ev("tour-finished") / tourStarts * 100)}% of ${tourStarts} who started it` : "")
+      + kpi(shares, "Shared QuranFlow", "copied or sent the link")
+      + kpi(evs("surah/").reduce((t, h) => t + h.count, 0), "Surah opens", "people × surahs opened");
+
+    // visitors per day (hourly numbers folded into days)
+    const perDay = new Map();
+    (total.stats || []).forEach(s => perDay.set(s.day, (perDay.get(s.day) || 0) + (s.daily || 0)));
+    const daysList = [...perDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+    const max = Math.max(1, ...daysList.map(d => d[1]));
+    $("chart").innerHTML = daysList.map(([d, n]) => `<i style="height:${Math.max(2, n / max * 100)}%" title="${d}: ${n}"></i>`).join("") || `<p class="empty">No visits yet.</p>`;
+    $("axis").innerHTML = daysList.length ? `<span>${daysList[0][0]}</span><span>busiest day: ${max.toLocaleString()}</span><span>${daysList[daysList.length - 1][0]}</span>` : "";
+
+    rows($("tour"), [
+      { name: "Started on a first visit", count: ev("tour-start-first-visit") },
+      { name: "Replayed (How it works)", count: ev("tour-start-replay") },
+      { name: "Watched to the end", count: ev("tour-finished") },
+      ...evs("tour-left/").map(h => ({ name: `Left at step ${h.path.split("/")[1]}`, count: h.count })).sort((a, b) => b.count - a.count),
+    ].filter(x => x.count));
+    rows($("share"), [["share-open", "Opened Share"], ["share-copy", "Copied the link"], ["share-sheet", "Phone's share sheet"], ["share-whatsapp", "WhatsApp"], ["share-messages", "Messages"], ["share-email", "Email"]]
+      .map(([k, name]) => ({ name, count: ev(k) })).filter(x => x.count));
+    rows($("surahs"), evs("surah/").map(h => { const n = +h.path.split("/")[1]; return { name: `${n} ${SURAHS[n] || ""}`, count: h.count }; }).sort((a, b) => b.count - a.count).slice(0, 15));
+    rows($("opens"), [
+      { name: "In a browser", count: Math.max(0, pageviews - ev("open-installed-app")) },
+      { name: "From the home screen (installed)", count: ev("open-installed-app") },
+      { name: "Inside Instagram", count: ev("open-in-instagram") },
+      { name: "Inside TikTok", count: ev("open-in-tiktok") },
+      { name: "Inside Facebook", count: ev("open-in-facebook") },
+      { name: "Installed from the browser prompt", count: ev("installed") },
+    ].filter(x => x.count));
+
+    await sleep(250);
+    const refs = await api("/stats/toprefs", { ...r, limit: 10 }).catch(() => ({ stats: [] }));
+    rows($("refs"), (refs.stats || []).map(s => ({ name: s.name || "Direct (typed or no referrer)", count: s.count })));
+    await sleep(250);
+    const sys = await api("/stats/systems", { ...r, limit: 8 }).catch(() => ({ stats: [] }));
+    rows($("systems"), (sys.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
+    await sleep(250);
+    const loc = await api("/stats/locations", { ...r, limit: 10 }).catch(() => ({ stats: [] }));
+    rows($("locations"), (loc.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
+
+    $("status").textContent = `${demo ? "Sample data · " : ""}Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · counts are people, not clicks`;
+  } catch (e) {
+    if (e.auth) { store.set(KEY, null); show(); $("loginErr").textContent = e.message; $("loginErr").hidden = false; return; }
+    $("status").textContent = "Couldn't load: " + e.message;
+  }
+}
+
+function show() {
+  const in_ = demo || !!store.get(KEY);
+  $("login").hidden = in_; $("dash").hidden = !in_; $("ranges").hidden = !in_;
+  if (in_) load();
+}
+$("login").addEventListener("submit", e => {
+  e.preventDefault();
+  const k = $("key").value.trim();
+  if (!k) return;
+  store.set(KEY, k); $("key").value = ""; $("loginErr").hidden = true;
+  show();
+});
+$("logout").onclick = () => { store.set(KEY, null); show(); };
+$("ranges").addEventListener("click", e => {
+  const b = e.target.closest("button[data-days]");
+  if (!b) return;
+  days = +b.dataset.days;
+  $("ranges").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  load();
+});
+// GoatCounter's counter skips any browser where localStorage "skipgc" is "t" — the whole site shares this storage
+$("skipMe").checked = store.get("skipgc") === "t";
+$("skipMe").onchange = () => store.set("skipgc", $("skipMe").checked ? "t" : null);
+
+function sample(path) {
+  const day = i => { const d = new Date(); d.setDate(d.getDate() - i); return d.toISOString().slice(0, 10); };
+  if (path === "/stats/total") return { total: 1840, total_events: 610, stats: Array.from({ length: days }, (_, i) => ({ day: day(days - 1 - i), daily: [40, 55, 62, 80, 120, 310, 280][i % 7] })) };
+  if (path === "/stats/hits") return { more: false, hits: [
+    { path: "/QuranFlow/", count: 1230, event: false, path_id: 1 },
+    { path: "tour-start-first-visit", count: 640, event: true, path_id: 2 }, { path: "tour-start-replay", count: 55, event: true, path_id: 3 },
+    { path: "tour-finished", count: 402, event: true, path_id: 4 }, { path: "tour-left/3", count: 90, event: true, path_id: 5 }, { path: "tour-left/12", count: 41, event: true, path_id: 6 },
+    { path: "open-installed-app", count: 188, event: true, path_id: 7 }, { path: "open-in-instagram", count: 260, event: true, path_id: 8 }, { path: "open-in-tiktok", count: 190, event: true, path_id: 9 },
+    { path: "share-open", count: 77, event: true, path_id: 10 }, { path: "share-copy", count: 49, event: true, path_id: 11 }, { path: "share-whatsapp", count: 21, event: true, path_id: 12 },
+    { path: "surah/67", count: 310, event: true, path_id: 13 }, { path: "surah/36", count: 140, event: true, path_id: 14 }, { path: "surah/18", count: 122, event: true, path_id: 15 }, { path: "surah/112", count: 95, event: true, path_id: 16 },
+  ] };
+  if (path === "/stats/toprefs") return { stats: [{ name: "instagram.com", count: 420 }, { name: "tiktok", count: 300 }, { name: "", count: 280 }, { name: "whatsapp", count: 60 }] };
+  if (path === "/stats/systems") return { stats: [{ name: "iOS", count: 900 }, { name: "Android", count: 260 }, { name: "macOS", count: 70 }] };
+  if (path === "/stats/locations") return { stats: [{ name: "United States", count: 600 }, { name: "United Kingdom", count: 210 }, { name: "Pakistan", count: 160 }] };
+  return {};
+}
+show();
+</script>
+</body>
+</html>
