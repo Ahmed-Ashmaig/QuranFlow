@@ -1022,10 +1022,10 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 .tleaf{position:absolute;inset:0;background:var(--sheet);border:1px solid var(--line);border-radius:3px 9px 9px 3px;display:grid;place-content:center;justify-items:center;gap:.45rem;box-shadow:inset 8px 0 12px -10px rgba(0,0,0,.3)}
 .tleaf b{font:700 .95rem/1 var(--display);color:var(--green)}
 .trule{width:1.6rem;height:2px;background:var(--gold);border-radius:1px}
-.tcover{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--green) 88%,white) 0%,var(--green) 55%,color-mix(in srgb,var(--green) 80%,black) 100%);border:2px solid var(--gold);border-radius:3px 9px 9px 3px;color:var(--gold);font:400 2.4rem/1 var(--q);transform-origin:left center;grid-template-rows:auto 1fr;padding-top:.85rem;transform:rotateY(-165deg);animation:coverClose 1s cubic-bezier(.5,0,.3,1) .45s forwards;backface-visibility:visible}
+.tcover{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--green) 88%,white) 0%,var(--green) 55%,color-mix(in srgb,var(--green) 80%,black) 100%);border:2px solid var(--gold);border-radius:3px 9px 9px 3px;color:var(--gold);font:400 2.4rem/1 var(--q);transform-origin:left center;grid-template-rows:auto 1fr;padding-top:1rem;transform:rotateY(-165deg);animation:coverClose 1s cubic-bezier(.5,0,.3,1) .45s forwards;backface-visibility:visible}
 .tcover::before{content:"";position:absolute;inset:.45rem;border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);border-radius:2px 7px 7px 2px}
-.tcover b{position:relative;font:700 .62rem/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
-.tcover span{align-self:center;margin-top:-.85rem}
+.tcover b{position:relative;font:700 .95rem/1 var(--display);letter-spacing:.01em}
+.tcover span{align-self:center;margin-top:-1rem}
 .tcover b,.tcover span{opacity:0;animation:fadeUp .35s ease 1.3s forwards}   /* after it shuts, so the name never shows mirrored mid-swing */
 .tour.paused .tcover b,.tour.paused .tcover span{animation-play-state:paused}
 @keyframes coverClose{to{transform:none}}
