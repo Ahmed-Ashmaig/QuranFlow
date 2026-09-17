@@ -13,7 +13,7 @@ self.addEventListener("activate", e => {
 const store = (req, res) => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return res; };
 self.addEventListener("fetch", e => {
   const req = e.request, url = new URL(req.url);
-  if (req.method !== "GET" || url.origin !== location.origin) return;
+  if (req.method !== "GET" || url.origin !== location.origin || url.pathname.includes("/admin/")) return;   // the analytics page is always live
   // The page, the app code and the surah list come from the network when online, so new surahs show up
   // straight away; everything else (surah data, fonts, icons) is served from the offline cache first.
   const fresh = req.mode === "navigate" || url.pathname.endsWith("/") || /(index\.html|app\.js|data\/index\.js)$/.test(url.pathname);

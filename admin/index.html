@@ -7,6 +7,14 @@
 <meta name="robots" content="noindex, nofollow">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src https://ahmedashmaig.goatcounter.com">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<!-- its own home-screen app: added from this page it opens straight here, with its own storage, so the key stays -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="QF Analytics">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F6F1E4">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
 /* QuranFlow's analytics, read from GoatCounter's API with a read-only key that stays in this browser. No counter
@@ -29,6 +37,8 @@ h2{margin:0 0 .5rem;font:700 1.08rem/1.2 var(--display)}
 .ranges{display:flex;gap:6px;flex-wrap:wrap}
 .ranges button{font:700 .85rem/1 var(--ui);border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:.5rem .8rem;cursor:pointer}
 .ranges button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.brand{flex:1 1 auto}
+.refresh{margin-left:auto;font:700 1.15rem/1 var(--ui);border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;width:2.6rem;height:2.6rem;cursor:pointer}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .kpi{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
 .kpi b{font:700 clamp(1.7rem,6vw,2.2rem)/1.05 var(--display);color:var(--green);font-variant-numeric:tabular-nums}
@@ -61,16 +71,19 @@ a{color:var(--green)}
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="brand"><div class="mark" aria-hidden="true">۞</div><div><span class="lbl">QuranFlow</span><h1>Analytics</h1></div></div>
+    <div class="brand"><div class="mark" aria-hidden="true">۞</div><div><span class="lbl">QuranFlow</span><h1>Analytics</h1></div>
+      <button type="button" class="refresh" id="refresh" aria-label="Refresh" hidden>↻</button></div>
     <div class="ranges" id="ranges" hidden>
       <button type="button" data-days="1">Today</button><button type="button" data-days="7" aria-pressed="true">7 days</button>
       <button type="button" data-days="30">30 days</button><button type="button" data-days="90">90 days</button>
+      <button type="button" data-days="all">All time</button>
     </div>
   </div>
 
   <form class="card login" id="login" hidden>
     <h2>Log in</h2>
-    <p class="note">Paste a GoatCounter API key with read access. It is saved only in this browser, never on the site.</p>
+    <p class="note">Paste a GoatCounter API key with read access. It is saved only on this device, never on the site, and you stay logged in.</p>
+    <p class="note">On your phone, add this page to your home screen (<b>•••</b> › <b>Share</b> › <b>View More</b> › <b>Add to Home Screen</b>), open it from there and log in once: the app keeps its own login.</p>
     <ol class="note">
       <li>Open <a href="https://ahmedashmaig.goatcounter.com" target="_blank" rel="noopener">ahmedashmaig.goatcounter.com</a> and log in.</li>
       <li>Click your <b>username</b> in the top menu, then <b>API</b>.</li>
@@ -111,7 +124,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
 const demo = new URLSearchParams(location.search).has("demo");   // sample numbers, to see the layout without a key
-let days = 7;
+const SINCE = "2026-09-17T00:00:00Z";   // counting started on the live site that day: "All time" begins here
+let days = (() => { const v = store.get("qf-admin-range"); return v === "all" ? "all" : [1, 7, 30, 90].includes(+v) ? +v : 7; })();
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function api(path, params = {}) {
@@ -129,8 +143,10 @@ async function api(path, params = {}) {
 }
 const hour = d => { d = new Date(d); d.setMinutes(0, 0, 0); return d; };
 function range() {
-  const end = hour(Date.now() + 3600e3), start = new Date(end);
-  if (days === 1) start.setHours(0); else start.setDate(start.getDate() - days);
+  const end = hour(Date.now() + 3600e3);
+  let start = new Date(end);
+  if (days === "all") start = new Date(SINCE);
+  else if (days === 1) start.setHours(0); else start.setDate(start.getDate() - days);
   return { start: start.toISOString(), end: end.toISOString() };
 }
 
@@ -216,7 +232,7 @@ async function load() {
 
 function show() {
   const in_ = demo || !!store.get(KEY);
-  $("login").hidden = in_; $("dash").hidden = !in_; $("ranges").hidden = !in_;
+  $("login").hidden = in_; $("dash").hidden = !in_; $("ranges").hidden = !in_; $("refresh").hidden = !in_;
   if (in_) load();
 }
 $("login").addEventListener("submit", e => {
@@ -230,9 +246,19 @@ $("logout").onclick = () => { store.set(KEY, null); show(); };
 $("ranges").addEventListener("click", e => {
   const b = e.target.closest("button[data-days]");
   if (!b) return;
-  days = +b.dataset.days;
-  $("ranges").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  days = b.dataset.days === "all" ? "all" : +b.dataset.days;
+  store.set("qf-admin-range", String(days));
+  paintRange();
   load();
+});
+function paintRange() { $("ranges").querySelectorAll("button[data-days]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.days === String(days)))); }
+paintRange();
+$("refresh").onclick = () => load();
+// back in the app after a while: fresh numbers
+let hiddenAt = 0;
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) hiddenAt = Date.now();
+  else if (hiddenAt && Date.now() - hiddenAt > 60000 && !$("dash").hidden) load();
 });
 // GoatCounter's counter skips any browser where localStorage "skipgc" is "t" — the whole site shares this storage
 $("skipMe").checked = store.get("skipgc") === "t";
@@ -240,7 +266,8 @@ $("skipMe").onchange = () => store.set("skipgc", $("skipMe").checked ? "t" : nul
 
 function sample(path) {
   const day = i => { const d = new Date(); d.setDate(d.getDate() - i); return d.toISOString().slice(0, 10); };
-  if (path === "/stats/total") return { total: 1840, total_events: 610, stats: Array.from({ length: days }, (_, i) => ({ day: day(days - 1 - i), daily: [40, 55, 62, 80, 120, 310, 280][i % 7] })) };
+  const n = days === "all" ? 14 : days;
+  if (path === "/stats/total") return { total: 1840, total_events: 610, stats: Array.from({ length: n }, (_, i) => ({ day: day(n - 1 - i), daily: [40, 55, 62, 80, 120, 310, 280][i % 7] })) };
   if (path === "/stats/hits") return { more: false, hits: [
     { path: "/QuranFlow/", count: 1230, event: false, path_id: 1 },
     { path: "tour-start-first-visit", count: 640, event: true, path_id: 2 }, { path: "tour-start-replay", count: 55, event: true, path_id: 3 },
