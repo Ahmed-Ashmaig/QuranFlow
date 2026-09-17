@@ -170,9 +170,10 @@ async function load() {
       + kpi(shares, "Shared QuranFlow", "copied or sent the link")
       + kpi(evs("surah/").reduce((t, h) => t + h.count, 0), "Surah opens", "people × surahs opened");
 
-    // visitors per day (hourly numbers folded into days)
+    // visitors per day: page visits only, so actions (events) don't count twice; every day in the range shows
     const perDay = new Map();
-    (total.stats || []).forEach(s => perDay.set(s.day, (perDay.get(s.day) || 0) + (s.daily || 0)));
+    (total.stats || []).forEach(s => perDay.set(s.day, 0));
+    hits.filter(h => !h.event).forEach(h => (h.stats || []).forEach(s => perDay.set(s.day, (perDay.get(s.day) || 0) + (s.daily || 0))));
     const daysList = [...perDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
     const max = Math.max(1, ...daysList.map(d => d[1]));
     $("chart").innerHTML = daysList.map(([d, n]) => `<i style="height:${Math.max(2, n / max * 100)}%" title="${d}: ${n}"></i>`).join("") || `<p class="empty">No visits yet.</p>`;
