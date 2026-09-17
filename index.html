@@ -928,6 +928,7 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 .strio .here .d{font-size:.88rem;color:var(--muted)}
 
 /* ---- home: the tour button, and the Saved tab ---- */
+.buildline{margin:1.5rem 0 0;text-align:center;font:500 .72rem/1.3 var(--ui);color:var(--muted);opacity:.8}
 .hometop{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem}
 .homeacts{display:flex;gap:.45rem;flex-wrap:wrap}
 .sharebtn{padding:.38rem .8rem .38rem .6rem}
@@ -1251,6 +1252,7 @@ try {
       <div id="homeSaved" hidden></div>
     </div>
     <div id="juzList" style="display:grid;gap:3rem"></div>
+    <p class="buildline" id="buildLine"></p>
   </section>
 
   <section id="surah" hidden>
@@ -1329,8 +1331,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=82768417f3"></script>
-<script src="app.js?v=82768417f3"></script>
+<script src="data/index.js?v=7f348968d9"></script>
+<script src="app.js?v=7f348968d9"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
