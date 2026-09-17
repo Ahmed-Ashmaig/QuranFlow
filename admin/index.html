@@ -62,6 +62,7 @@ h2{margin:0 0 .5rem;font:700 1.08rem/1.2 var(--display)}
 .login input{width:100%;font:500 1rem var(--ui);padding:.7rem .8rem;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
 .err{color:var(--red);font-weight:700;font-size:.9rem}
 .keyway{display:grid;gap:8px}
+.explain p{margin:.2rem 0 0;font-size:.93rem}
 .keyway summary{cursor:pointer}
 .status{font-size:.85rem;color:var(--muted)}
 .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
@@ -102,18 +103,20 @@ a{color:var(--green)}
   <div id="dash" hidden>
     <div class="wrap">
       <p class="status" id="status">Loading…</p>
-      <p class="note">Every number here is <b>people</b>: GoatCounter counts each person once per visit (a few hours), so tapping again on the same phone won't add to it. To test, turn off <b>Don't count my own visits</b> below, then try another device, or your phone on mobile data instead of Wi-Fi. New counts can take a minute to show.</p>
       <div class="kpis" id="kpis"></div>
+      <div class="card explain"><h2>What's counted</h2>
+        <p><b>Visits</b>: someone opening QuranFlow. <b>Tracked actions</b>: things people do inside it, such as starting or finishing the demo, leaving the demo partway, sharing the link, opening a surah, or opening QuranFlow from their home screen or inside Instagram or TikTok.</p>
+        <p class="note">Both count <b>people</b>, not taps: each person counts once per visit (a few hours), so reloading on the same phone won't add. Countries, devices and sources below count <b>visits only</b>. GoatCounter's own dashboard adds visits and actions together, so its totals look bigger. To test, turn off <b>Don't count my own visits</b> below, then use another device or mobile data instead of Wi-Fi; new counts can take a minute.</p></div>
       <div class="card"><h2>Visitors per day</h2><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
       <div class="grid2">
-        <div class="card"><h2>Where visitors come from</h2><div class="rows" id="refs"></div>
+        <div class="card"><h2>Where visitors come from <small class="note">(visits)</small></h2><div class="rows" id="refs"></div>
           <p class="note">Tip: put <b>?ref=tiktok</b> or <b>?ref=instagram</b> on the links you post, so each one shows up here by name.</p></div>
-        <div class="card"><h2>The demo</h2><div class="rows" id="tour"></div></div>
-        <div class="card"><h2>Sharing</h2><div class="rows" id="share"></div></div>
-        <div class="card"><h2>Surahs opened</h2><div class="rows" id="surahs"></div></div>
+        <div class="card"><h2>The demo <small class="note">(actions)</small></h2><div class="rows" id="tour"></div></div>
+        <div class="card"><h2>Sharing <small class="note">(actions)</small></h2><div class="rows" id="share"></div></div>
+        <div class="card"><h2>Surahs opened <small class="note">(actions)</small></h2><div class="rows" id="surahs"></div></div>
         <div class="card"><h2>How they open it</h2><div class="rows" id="opens"></div></div>
-        <div class="card"><h2>Devices</h2><div class="rows" id="systems"></div></div>
-        <div class="card"><h2>Countries</h2><div class="rows" id="locations"></div></div>
+        <div class="card"><h2>Devices <small class="note">(visits)</small></h2><div class="rows" id="systems"></div></div>
+        <div class="card"><h2>Countries <small class="note">(visits)</small></h2><div class="rows" id="locations"></div></div>
       </div>
       <div class="foot">
         <label class="toggle"><input type="checkbox" id="skipMe"> Don't count my own visits on this device</label>
@@ -184,9 +187,10 @@ async function load() {
     const evs = prefix => hits.filter(h => h.event && h.path.startsWith(prefix));
     const pageviews = (total.total || 0) - (total.total_events || 0);
     const shares = ["share-copy", "share-sheet", "share-whatsapp", "share-messages", "share-email"].reduce((t, k) => t + ev(k), 0);
-    const tourStarts = ev("tour-start-first-visit") + ev("tour-start-replay");
+    const tourStarts = ev("tour-start-first-visit") + ev("tour-start-return-visit") + ev("tour-start-replay");
     const kpi = (n, label, sub) => `<div class="kpi"><b>${Number(n).toLocaleString()}</b><span>${label}</span>${sub ? `<small>${sub}</small>` : ""}</div>`;
-    $("kpis").innerHTML = kpi(pageviews, "Visitors", "people who opened the site")
+    $("kpis").innerHTML = kpi(pageviews, "Visitors", "people who opened QuranFlow")
+      + kpi(total.total_events || 0, "Tracked actions", "demo, sharing, surahs… (see below)")
       + kpi(ev("open-installed-app"), "Opened as an app", "from their home screen")
       + kpi(ev("tour-finished"), "Watched the demo to the end", tourStarts ? `${Math.round(ev("tour-finished") / tourStarts * 100)}% of ${tourStarts} who started it` : "")
       + kpi(shares, "Shared QuranFlow", "copied or sent the link")
@@ -203,6 +207,7 @@ async function load() {
 
     rows($("tour"), [
       { name: "Started on a first visit", count: ev("tour-start-first-visit") },
+      { name: "Started on a return visit", count: ev("tour-start-return-visit") },
       { name: "Replayed (How it works)", count: ev("tour-start-replay") },
       { name: "Watched to the end", count: ev("tour-finished") },
       ...evs("tour-left/").map(h => ({ name: `Left at step ${h.path.split("/")[1]}`, count: h.count })).sort((a, b) => b.count - a.count),
