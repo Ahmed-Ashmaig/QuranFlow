@@ -104,21 +104,21 @@ a{color:var(--green)}
     <div class="wrap">
       <p class="status" id="status">Loading…</p>
       <div class="kpis" id="kpis"></div>
-      <div class="card explain"><h2>What's counted</h2>
-        <p><b>Visits</b>: someone opening QuranFlow. <b>Tracked actions</b>: things people do inside it, such as starting or finishing the demo, leaving the demo partway, sharing the link, opening a surah, or opening QuranFlow from their home screen or inside Instagram or TikTok.</p>
-        <p class="note">Both count <b>people</b>, not taps: each person counts once per visit (a few hours), so reloading on the same phone won't add. Countries, devices and sources below count <b>visits only</b>. GoatCounter's own dashboard adds visits and actions together, so its totals look bigger. To test, turn off <b>Don't count my own visits</b> below, then use another device or mobile data instead of Wi-Fi; new counts can take a minute.</p></div>
+      <div class="card explain"><h2>Every number here is people</h2>
+        <p>Not taps. Each person counts once per visit (a few hours), so reloading on the same phone won't add to anything. <b>Visitors</b> is people who opened QuranFlow; every list below is people too — how many started the demo, watched it to the end, shared the link, opened a surah, and so on.</p>
+        <p class="note">Countries, devices and sources count people who visited, so they add up to Visitors. To test, turn off <b>Don't count my own visits</b> below, then use another device or mobile data instead of Wi-Fi; new counts can take a minute. GoatCounter's own dashboard adds visits and actions together, so its totals look bigger than these.</p></div>
       <div class="card"><h2>Visitors per day</h2><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
       <div class="grid2">
-        <div class="card"><h2>Where visitors come from <small class="note">(visits)</small></h2><div class="rows" id="refs"></div>
+        <div class="card"><h2>Where visitors come from <small class="note">(people)</small></h2><div class="rows" id="refs"></div>
           <p class="note">Tip: put <b>?ref=tiktok</b> or <b>?ref=instagram</b> on the links you post, so each one shows up here by name.</p></div>
-        <div class="card"><h2>The demo <small class="note">(actions)</small></h2><div class="rows" id="tour"></div></div>
-        <div class="card"><h2>Sharing <small class="note">(actions)</small></h2><div class="rows" id="share"></div></div>
-        <div class="card"><h2>Feedback <small class="note">(actions)</small></h2><div class="rows" id="feedback"></div>
+        <div class="card"><h2>The demo <small class="note">(people)</small></h2><div class="rows" id="tour"></div></div>
+        <div class="card"><h2>Sharing <small class="note">(people)</small></h2><div class="rows" id="share"></div></div>
+        <div class="card"><h2>Feedback <small class="note">(people)</small></h2><div class="rows" id="feedback"></div>
           <p class="note">Messages arrive by email at ahmed@ashmaig.com.</p></div>
-        <div class="card"><h2>Surahs opened <small class="note">(actions)</small></h2><div class="rows" id="surahs"></div></div>
+        <div class="card"><h2>Surahs opened <small class="note">(people)</small></h2><div class="rows" id="surahs"></div></div>
         <div class="card"><h2>How they open it</h2><div class="rows" id="opens"></div></div>
-        <div class="card"><h2>Devices <small class="note">(visits)</small></h2><div class="rows" id="systems"></div></div>
-        <div class="card"><h2>Countries <small class="note">(visits)</small></h2><div class="rows" id="locations"></div></div>
+        <div class="card"><h2>Devices <small class="note">(people)</small></h2><div class="rows" id="systems"></div></div>
+        <div class="card"><h2>Countries <small class="note">(people)</small></h2><div class="rows" id="locations"></div></div>
       </div>
       <div class="foot">
         <label class="toggle"><input type="checkbox" id="skipMe"> Don't count my own visits on this device</label>
@@ -192,11 +192,10 @@ async function load() {
     const tourStarts = ev("tour-start-first-visit") + ev("tour-start-return-visit") + ev("tour-start-replay");
     const kpi = (n, label, sub) => `<div class="kpi"><b>${Number(n).toLocaleString()}</b><span>${label}</span>${sub ? `<small>${sub}</small>` : ""}</div>`;
     $("kpis").innerHTML = kpi(pageviews, "Visitors", "people who opened QuranFlow")
-      + kpi(total.total_events || 0, "Tracked actions", "demo, sharing, surahs… (see below)")
       + kpi(ev("open-installed-app"), "Opened as an app", "from their home screen")
       + kpi(ev("tour-finished"), "Watched the demo to the end", tourStarts ? `${Math.round(ev("tour-finished") / tourStarts * 100)}% of ${tourStarts} who started it` : "")
       + kpi(shares, "Shared QuranFlow", "copied or sent the link")
-      + kpi(evs("surah/").reduce((t, h) => t + h.count, 0), "Surah opens", "people × surahs opened");
+      + kpi(evs("surah/").reduce((t, h) => t + h.count, 0), "Opened a surah", "counted once per surah, per person");
 
     // visitors per day: page visits only, so actions (events) don't count twice; every day in the range shows
     const perDay = new Map();
@@ -240,7 +239,7 @@ async function load() {
     const loc = await byPage("/stats/locations", 10);
     rows($("locations"), (loc.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
 
-    $("status").textContent = `${demo ? "Sample data · " : ""}Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · counts are people, not clicks`;
+    $("status").textContent = `${demo ? "Sample data · " : ""}Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · every count is people`;
   } catch (e) {
     if (e.auth) { store.set(KEY, null); show(); $("loginErr").textContent = e.message; $("loginErr").hidden = false; return; }
     $("status").textContent = "Couldn't load: " + e.message;
