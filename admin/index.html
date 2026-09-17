@@ -113,6 +113,8 @@ a{color:var(--green)}
           <p class="note">Tip: put <b>?ref=tiktok</b> or <b>?ref=instagram</b> on the links you post, so each one shows up here by name.</p></div>
         <div class="card"><h2>The demo <small class="note">(actions)</small></h2><div class="rows" id="tour"></div></div>
         <div class="card"><h2>Sharing <small class="note">(actions)</small></h2><div class="rows" id="share"></div></div>
+        <div class="card"><h2>Feedback <small class="note">(actions)</small></h2><div class="rows" id="feedback"></div>
+          <p class="note">Messages arrive by email at ahmed@ashmaig.com.</p></div>
         <div class="card"><h2>Surahs opened <small class="note">(actions)</small></h2><div class="rows" id="surahs"></div></div>
         <div class="card"><h2>How they open it</h2><div class="rows" id="opens"></div></div>
         <div class="card"><h2>Devices <small class="note">(visits)</small></h2><div class="rows" id="systems"></div></div>
@@ -214,6 +216,7 @@ async function load() {
     ].filter(x => x.count));
     rows($("share"), [["share-open", "Opened Share"], ["share-copy", "Copied the link"], ["share-sheet", "Phone's share sheet"], ["share-whatsapp", "WhatsApp"], ["share-messages", "Messages"], ["share-email", "Email"]]
       .map(([k, name]) => ({ name, count: ev(k) })).filter(x => x.count));
+    rows($("feedback"), [["feedback-open", "Opened Feedback"], ["feedback-sent", "Sent feedback"]].map(([k, name]) => ({ name, count: ev(k) })).filter(x => x.count));
     rows($("surahs"), evs("surah/").map(h => { const n = +h.path.split("/")[1]; return { name: `${n} ${SURAHS[n] || ""}`, count: h.count }; }).sort((a, b) => b.count - a.count).slice(0, 15));
     rows($("opens"), [
       { name: "In a browser", count: Math.max(0, pageviews - ev("open-installed-app")) },
