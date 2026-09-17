@@ -1342,7 +1342,16 @@ if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     if (hadController && !reloaded) { reloaded = true; try { sessionStorage.setItem("qf-reloaded", "1"); } catch (e) {} location.reload(); }
   });
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+  // Look for a new version on every launch and whenever the app comes back into view, so updates land without
+  // anyone reinstalling: the new worker takes over and the page reloads itself once.
+  window.addEventListener("load", async () => {
+    const reg = await navigator.serviceWorker.register("sw.js").catch(() => null);
+    if (!reg) return;
+    let last = 0;
+    const check = () => { if (Date.now() - last > 60000) { last = Date.now(); reg.update().catch(() => {}); } };
+    check();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) check(); });
+  });
 }
 </script>
 </body>
