@@ -38,7 +38,7 @@ h2{margin:0 0 .5rem;font:700 1.08rem/1.2 var(--display)}
 .ranges button{font:700 .85rem/1 var(--ui);border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;padding:.5rem .8rem;cursor:pointer}
 .ranges button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .brand{flex:1 1 auto}
-.refresh{margin-left:auto;font:700 1.15rem/1 var(--ui);border:1px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:999px;width:2.6rem;height:2.6rem;cursor:pointer}
+.refresh{margin-left:auto;font:700 .92rem/1 var(--ui);border:1.5px solid var(--green);background:var(--sheet);color:var(--green);border-radius:999px;padding:.6rem .9rem;cursor:pointer;white-space:nowrap}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .kpi{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px}
 .kpi b{font:700 clamp(1.7rem,6vw,2.2rem)/1.05 var(--display);color:var(--green);font-variant-numeric:tabular-nums}
@@ -61,6 +61,8 @@ h2{margin:0 0 .5rem;font:700 1.08rem/1.2 var(--display)}
 .login ol{margin:0;padding-left:1.2rem;display:grid;gap:4px}
 .login input{width:100%;font:500 1rem var(--ui);padding:.7rem .8rem;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
 .err{color:var(--red);font-weight:700;font-size:.9rem}
+.keyway{display:grid;gap:8px}
+.keyway summary{cursor:pointer}
 .status{font-size:.85rem;color:var(--muted)}
 .foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
 .toggle{display:flex;align-items:center;gap:8px;font-size:.9rem}
@@ -72,7 +74,7 @@ a{color:var(--green)}
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="mark" aria-hidden="true">۞</div><div><span class="lbl">QuranFlow</span><h1>Analytics</h1></div>
-      <button type="button" class="refresh" id="refresh" aria-label="Refresh" hidden>↻</button></div>
+      <button type="button" class="refresh" id="refresh">↻ Refresh</button></div>
     <div class="ranges" id="ranges" hidden>
       <button type="button" data-days="1">Today</button><button type="button" data-days="7" aria-pressed="true">7 days</button>
       <button type="button" data-days="30">30 days</button><button type="button" data-days="90">90 days</button>
@@ -82,21 +84,25 @@ a{color:var(--green)}
 
   <form class="card login" id="login" hidden>
     <h2>Log in</h2>
-    <p class="note">Paste a GoatCounter API key with read access. It is saved only on this device, never on the site, and you stay logged in.</p>
-    <p class="note">On your phone, add this page to your home screen (<b>•••</b> › <b>Share</b> › <b>View More</b> › <b>Add to Home Screen</b>), open it from there and log in once: the app keeps its own login.</p>
+    <input type="password" id="pw" placeholder="Password" inputmode="numeric" autocomplete="current-password" aria-label="Password">
+    <button class="btn" type="submit">Log in</button>
+    <p class="err" id="loginErr" hidden></p>
+    <p class="note">You stay logged in on this device. On your phone, add this page to your home screen (<b>•••</b> › <b>Share</b> › <b>View More</b> › <b>Add to Home Screen</b>), open it from there and log in once.</p>
+    <details class="keyway"><summary class="note">Use a GoatCounter API key instead</summary>
+    <p class="note">Paste a GoatCounter API key with read access. It is saved only on this device, never on the site.</p>
     <ol class="note">
       <li>Open <a href="https://ahmedashmaig.goatcounter.com" target="_blank" rel="noopener">ahmedashmaig.goatcounter.com</a> and log in.</li>
       <li>Click your <b>username</b> in the top menu, then <b>API</b>.</li>
       <li>Create a new token that can only <b>read statistics</b>, and copy it.</li>
     </ol>
     <input type="password" id="key" placeholder="API token" autocomplete="off" spellcheck="false" aria-label="GoatCounter API token">
-    <button class="btn" type="submit">Show my analytics</button>
-    <p class="err" id="loginErr" hidden></p>
+    </details>
   </form>
 
   <div id="dash" hidden>
     <div class="wrap">
       <p class="status" id="status">Loading…</p>
+      <p class="note">Every number here is <b>people</b>: GoatCounter counts each person once per visit (a few hours), so tapping again on the same phone won't add to it. To test, turn off <b>Don't count my own visits</b> below, then try another device, or your phone on mobile data instead of Wi-Fi. New counts can take a minute to show.</p>
       <div class="kpis" id="kpis"></div>
       <div class="card"><h2>Visitors per day</h2><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
       <div class="grid2">
@@ -232,15 +238,27 @@ async function load() {
 
 function show() {
   const in_ = demo || !!store.get(KEY);
-  $("login").hidden = in_; $("dash").hidden = !in_; $("ranges").hidden = !in_; $("refresh").hidden = !in_;
+  $("login").hidden = in_; $("dash").hidden = !in_; $("ranges").hidden = !in_;
   if (in_) load();
 }
-$("login").addEventListener("submit", e => {
+// The read-only API key, encrypted with the admin password: the page can only use it once the password opens it.
+const LOCKED = {"iter": 600000, "salt": "1kJbMPoPz8q+F4XyN2wR7A==", "iv": "2N8oj9Ze7m2zakFD", "ct": "5+p3nWEyei9aV1BZieSt3oqbwB0/kl9F62HlKa+TSU2AORsuoeOsPU3uEmLbG8tLujRBH974E3wSiQSaWYtsJhfu"};
+const bytes = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+async function unlock(password) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: bytes(LOCKED.salt), iterations: LOCKED.iter, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  return new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes(LOCKED.iv) }, key, bytes(LOCKED.ct)));
+}
+$("login").addEventListener("submit", async e => {
   e.preventDefault();
-  const k = $("key").value.trim();
-  if (!k) return;
-  store.set(KEY, k); $("key").value = ""; $("loginErr").hidden = true;
-  show();
+  const pw = $("pw").value.trim(), k = $("key").value.trim(), err = $("loginErr"), btn = $("login").querySelector(".btn");
+  err.hidden = true;
+  if (k) { store.set(KEY, k); $("key").value = ""; return show(); }
+  if (!pw) return;
+  btn.disabled = true; btn.textContent = "Checking…";
+  try { store.set(KEY, await unlock(pw)); $("pw").value = ""; show(); }
+  catch (x) { err.textContent = "Wrong password."; err.hidden = false; }
+  finally { btn.disabled = false; btn.textContent = "Log in"; }
 });
 $("logout").onclick = () => { store.set(KEY, null); show(); };
 $("ranges").addEventListener("click", e => {
@@ -253,7 +271,7 @@ $("ranges").addEventListener("click", e => {
 });
 function paintRange() { $("ranges").querySelectorAll("button[data-days]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.days === String(days)))); }
 paintRange();
-$("refresh").onclick = () => load();
+$("refresh").onclick = () => ($("dash").hidden ? location.reload() : load());
 // back in the app after a while: fresh numbers
 let hiddenAt = 0;
 document.addEventListener("visibilitychange", () => {
