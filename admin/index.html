@@ -105,8 +105,8 @@ a{color:var(--green)}
       <p class="status" id="status">Loading…</p>
       <div class="kpis" id="kpis"></div>
       <div class="card explain"><h2>Every number here is people</h2>
-        <p>Not taps. Each person counts once per visit (a few hours), so reloading on the same phone won't add to anything. <b>Visitors</b> is people who opened QuranFlow; every list below is people too — how many started the demo, watched it to the end, shared the link, opened a surah, and so on.</p>
-        <p class="note">Countries, devices and sources count people who visited, so they add up to Visitors. To test, turn off <b>Don't count my own visits</b> below, then use another device or mobile data instead of Wi-Fi; new counts can take a minute. GoatCounter's own dashboard adds visits and actions together, so its totals look bigger than these.</p></div>
+        <p>Not taps. Each person counts once per visit (a few hours), so reloading on the same phone won't add to anything. <b>Visitors</b> is real people who opened QuranFlow; the lists below are people too — how many started the demo, watched it to the end, shared the link or opened a surah.</p>
+        <p class="note">To test, turn off <b>Don't count my own visits</b> below, then use another device or mobile data instead of Wi-Fi; new counts can take a minute. GoatCounter's own dashboard counts visits and actions together, so its totals look bigger than these.</p></div>
       <div class="card"><h2>Visitors per day</h2><div class="chart" id="chart"></div><div class="axis" id="axis"></div></div>
       <div class="grid2">
         <div class="card"><h2>Where visitors come from <small class="note">(people)</small></h2><div class="rows" id="refs"></div>
@@ -117,11 +117,10 @@ a{color:var(--green)}
           <p class="note">Messages arrive by email at ahmed@ashmaig.com.</p></div>
         <div class="card"><h2>Surahs opened <small class="note">(people)</small></h2><div class="rows" id="surahs"></div></div>
         <div class="card"><h2>How they open it</h2><div class="rows" id="opens"></div></div>
-        <div class="card"><h2>Devices <small class="note">(people)</small></h2><div class="rows" id="systems"></div></div>
-        <div class="card"><h2>Countries <small class="note">(people)</small></h2><div class="rows" id="locations"></div></div>
       </div>
       <div class="foot">
         <label class="toggle"><input type="checkbox" id="skipMe"> Don't count my own visits on this device</label>
+        <span class="note" id="build">build f2add9fdf49f</span>
         <span><a href="https://ahmedashmaig.goatcounter.com" target="_blank" rel="noopener">Full GoatCounter dashboard</a> · <button class="btn ghost" type="button" id="logout">Log out</button></span>
       </div>
     </div>
@@ -232,12 +231,6 @@ async function load() {
     await sleep(250);
     const refs = await byPage("/stats/toprefs", 10);
     rows($("refs"), (refs.stats || []).map(s => ({ name: s.name || "Direct (typed or no referrer)", count: s.count })));
-    await sleep(250);
-    const sys = await byPage("/stats/systems", 8);
-    rows($("systems"), (sys.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
-    await sleep(250);
-    const loc = await byPage("/stats/locations", 10);
-    rows($("locations"), (loc.stats || []).map(s => ({ name: s.name || "Unknown", count: s.count })));
 
     $("status").textContent = `${demo ? "Sample data · " : ""}Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · every count is people`;
   } catch (e) {
