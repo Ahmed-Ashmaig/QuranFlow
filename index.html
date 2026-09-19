@@ -94,10 +94,18 @@ p{margin:0}
 .crumb{min-width:0;font-size:.9rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .crumb b{color:var(--ink)}
 .navbtns{margin-inline-start:auto;display:flex;gap:.35rem}
-.navbtns a{font-size:.85rem;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.25rem .7rem;color:var(--ink);white-space:nowrap}
-.navbtns{min-width:0;align-items:center}
-.navbtns a,.navbtns .here{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.navbtns .here{font-size:.88rem;font-weight:700;color:var(--ink);padding:.25rem .75rem;border-radius:999px;background:var(--sheet);border:1px solid var(--ink)}
+.navbtns{min-width:0;align-items:stretch}
+/* Header scale of the .abtn look used in the bottom bar: same colours, same label-over-name stacking. */
+.navbtns a,.navbtns .here{min-width:0;font:700 .74rem/1.15 var(--ui);text-align:center;border-radius:11px;
+  border:2px solid transparent;padding:.22rem .6rem;text-decoration:none;display:flex;flex-direction:column;justify-content:center}
+.navbtns a.next{background:var(--green);color:var(--sheet)}
+.navbtns a.prev{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
+.navbtns .here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Only the surah name ellipsises; the label line above it is short enough to always fit. */
+.navbtns a small,.navbtns .here small{display:block;font-size:.66rem;font-weight:700;line-height:1.1;margin-top:1px;
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.navbtns a small{font-weight:500;opacity:.9}
 
 /* ---- home ---- */
 .homehead h1{margin:0;font:700 clamp(1.8rem,5vw,2.6rem)/1.05 var(--display);text-wrap:balance}
@@ -179,8 +187,10 @@ a.js:hover{border-color:var(--gold)}
 .blk .weak{font-style:normal;font-size:.7rem;font-weight:700;color:var(--red)}
 .blk:hover{filter:brightness(.96)}
 .blk.right{outline:3px solid var(--green)} .blk.wrong{outline:3px solid var(--red)}
-.b1{background:var(--s1)} .b2{background:var(--s2)} .b3{background:var(--s3)} .b4{background:var(--s4)}
-.b5{background:var(--s5)} .b6{background:var(--s6)} .b7{background:var(--s7)} .b8{background:var(--s8)}
+.b1{background:var(--s1);--bg:var(--s1)} .b2{background:var(--s2);--bg:var(--s2)}
+.b3{background:var(--s3);--bg:var(--s3)} .b4{background:var(--s4);--bg:var(--s4)}
+.b5{background:var(--s5);--bg:var(--s5)} .b6{background:var(--s6);--bg:var(--s6)}
+.b7{background:var(--s7);--bg:var(--s7)} .b8{background:var(--s8);--bg:var(--s8)}
 .blk.b1[aria-pressed="true"]{border-color:var(--s1e)} .blk.b2[aria-pressed="true"]{border-color:var(--s2e)}
 .blk.b3[aria-pressed="true"]{border-color:var(--s3e)} .blk.b4[aria-pressed="true"]{border-color:var(--s4e)}
 .blk.b5[aria-pressed="true"]{border-color:var(--s5e)} .blk.b6[aria-pressed="true"]{border-color:var(--s6e)}
@@ -268,13 +278,43 @@ a.js:hover{border-color:var(--gold)}
 .eng{font-size:2.7cqi;line-height:1.4;color:var(--muted);overflow:hidden;display:-webkit-box;-webkit-line-clamp:16;-webkit-box-orient:vertical}
 .enb{position:relative}
 .enb.other{background:var(--paper);color:var(--muted);border-style:dashed;align-content:center;justify-items:center;cursor:default;font-style:italic}
+/* a neighbouring surah's greyed lines are a door into that surah */
+.enb.other.go{cursor:pointer;gap:.4cqi}
+.enb.other.go:hover,.enb.other.go:focus-visible{border-color:var(--green);color:var(--ink)}
+.engo{font-style:normal;font-weight:700;font-size:2.4cqi;color:var(--green)}
 .enb.slim{align-content:center;justify-items:center;padding:0}
 .enb.slim b{font-size:3cqi;opacity:.7}
+/* A section owns only the muṣḥaf lines its ayat take up, and some own one or two. Clamp the card to what fits, or
+   the title is sliced through the middle and the gist bleeds out under it (surah.js sets r1/r2). */
+/* A section owning only one or two muṣḥaf lines has nowhere near enough room for its card. Rather than drop the
+   description, the card scrolls inside itself: the header and the title's first line sit at rest, and a flick
+   brings up the rest. No clamps here — clamping would hide text the scroll is meant to reveal. */
+/* No scroll-snap here: with snap points on the children the browser picks one on layout and the card comes up
+   already scrolled to its last line. These start at the top and are scrolled by hand. */
+.enb.tight{overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior:contain}
+.enb.tight::-webkit-scrollbar{display:none}
+.enb.tight em,.enb.tight .eng{-webkit-line-clamp:unset;display:block;overflow:visible}
+/* At rest the card can only show part of the next line, which reads as sliced text. A gradient pinned to the
+   bottom of the visible area fades that half-line out, so it says "there is more below" instead of looking broken.
+   It has to be an overlay, not a mask: masking the element would fade its background too and let the Arabic page
+   underneath bleed through. */
+.enb.tight::after{content:"";position:sticky;bottom:0;display:block;height:10px;margin-top:-10px;
+  background:linear-gradient(transparent,var(--bg,var(--sheet)));pointer-events:none}
+.enb.r1{padding-block:.15cqi;gap:.05cqi}
+/* the "scroll ⌄" nudge, only on cards that have more text than they can show */
+.enscroll{margin-inline-start:auto;flex:none;font-weight:700;color:var(--gold);opacity:.85;white-space:nowrap}
+.enb.tight .enh{position:sticky;top:0;z-index:1;background:inherit}
 /* tapped: the block steps aside so the muṣḥaf lines underneath show through */
 /* English page, one section tapped: the block steps aside and the muṣḥaf lines show through */
 .pages.en .enb.swapped{background:transparent!important;border-style:dashed;border-color:var(--line)}
 .pages.en .enb.swapped > *{visibility:hidden}
 .pages.en .enb.swapped::after{content:attr(data-n);position:absolute;top:1px;inset-inline-start:3px;font:700 2.4cqi var(--ui);color:var(--muted)}
+/* Where a card has the room, the section's points sit under the summary: one line per turn of the passage, each
+   with the ayat it covers. This is the page where a single section fills the screen. */
+.enpts{list-style:none;margin:.3cqi 0 0;padding:0;display:grid;gap:.35cqi;font-size:2.5cqi;line-height:1.35;
+  color:var(--ink);overflow:hidden}
+.enpts li{display:grid;grid-template-columns:7.5cqi minmax(0,1fr);gap:1cqi}
+.enpts b{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
 .enb.on{border-color:var(--ink)}
 .enb.faded{opacity:.45}
 /* Practice: the mode and scope above the page, and one line under it for whatever the round needs said */
@@ -331,7 +371,7 @@ a.js:hover{border-color:var(--gold)}
 .poollbl{flex:none;font:700 .72rem var(--ui);color:var(--muted)}
 .poolrow select:disabled{opacity:.45}
 .poolrow select{flex:1 1 0;min-width:0;font:600 .78rem var(--ui);color:var(--ink);background:var(--sheet);border:1.5px solid var(--ink);border-radius:999px;padding:.28rem .45rem;text-overflow:ellipsis}
-.abtn.mark small{display:block;font-size:.62rem;font-weight:500;opacity:.85;line-height:1.1;margin-top:1px}
+.abtn small{display:block;font-size:.62rem;font-weight:500;opacity:.85;line-height:1.1;margin-top:1px}
 .dots{display:inline-flex;gap:2px;vertical-align:middle;margin-inline-start:.25rem}
 .dots i{box-sizing:border-box;width:.52rem;height:.52rem;border-radius:50%;border:1.5px solid var(--green)}
 .dots i.ok{background:var(--green)}
@@ -368,6 +408,11 @@ a.js:hover{border-color:var(--gold)}
 .pagerow{display:flex;align-items:center;gap:.5rem}
 .pagerow .pagetxt{flex:1;min-width:0}
 .langlbl{font-size:.7rem;color:var(--muted);white-space:nowrap}
+/* Learn: switch the whole surah between the section explanations and the muṣḥaf Arabic — the same thing tapping
+   every section card one by one would do. Neither side is pressed while some sections are flipped and others are not. */
+.uncover{display:inline-flex;align-items:center;gap:.4rem;flex:none}
+.uncover[hidden]{display:none!important}
+.unclbl{font:700 .72rem/1 var(--ui);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 .langtog{flex:none;display:flex;border:1px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--sheet)}
 .langtog button{all:unset;cursor:pointer;font-size:.78rem;font-weight:700;padding:.32rem .7rem;color:var(--muted);text-align:center}
 .langtog button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
@@ -423,6 +468,9 @@ a.js:hover{border-color:var(--gold)}
 .abtn.stuck{background:var(--sheet);color:var(--gold);border-color:var(--gold)}
 .abtn.reveal{background:var(--sheet);color:var(--green);border-color:var(--green)}
 .abtn.prev{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
+/* Not a control — the same chip the header uses, so both bars read the same way. */
+.abtn.here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;
+  display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
 .abtn:disabled{opacity:.45;cursor:default}
 .abtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .anav-mid{display:grid;justify-items:center;gap:.2rem;min-width:0}
@@ -520,6 +568,20 @@ a.js:hover{border-color:var(--gold)}
 body.tourpaused .splash,body.tourpaused .splash *{animation-play-state:paused!important}
 /* home: weak spots across surahs */
 .hometabs{margin-block:.5rem .7rem}
+/* how the surah list is ordered: straight through, or grouped into juz */
+/* The order toggle is the first row of the surah list itself, not a loose button above it: it shares the card's
+   background and border and sits flush on top of the rows it orders. */
+.listtop{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;background:var(--sheet);
+  border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;padding:.5rem .6rem .55rem}
+.listtop + .chips{border-radius:0 0 10px 10px;border-top:0}
+/* the bar and the rows it orders are one card: no gap between them */
+.listwrap{gap:0}
+/* in the juz view the bar stands on its own above the juz headings, so it keeps all four corners */
+.listtop.alone{border:1px solid var(--line);border-radius:10px;margin-bottom:.6rem}
+.listtop .lbl{flex:none}
+.viewtabs{max-width:17rem;flex:1;margin:0}
+.viewtabs button{font-size:.82rem;padding-block:.32rem}
+.viewtabs[hidden]{display:none!important}
 #homeWeak{display:grid;gap:.6rem}
 #homeWeak[hidden]{display:none}
 .wempty{margin:0;color:var(--muted);font-size:.9rem}
@@ -769,7 +831,13 @@ details[open]>summary .more::before{content:"▾ Close"}
   #scr2 .pbar .qsec{padding:.18rem .6rem;display:flex;align-items:center}
   #scr2 .pbar .qsec b{font-size:.82rem}
   #scr2 .pbar .qsec span{display:none}
-  .stage.practice #scr2 .pagebar{display:none}
+  /* Practice shows the page pips too: knowing where you are in the surah matters as much while reciting as while
+     reading. Only the pips — the page label and the Reveal-all row stay hidden, so the muṣḥaf keeps its height. */
+  /* Practice hides the row of section numbers: people read it as page numbers and it is really a Learn tool.
+     The eye stays, so revealing and covering the surah is still one tap away. */
+  .stage.practice #scr2 .scoperow .qsecs{display:none}
+  .stage.practice #scr2 .pagebar{display:flex}
+  .stage.practice #scr2 .pagebar .pagerow{display:none}
   .anav .anav-where{display:none}
   .anav.where-on .anav-where{display:block;justify-self:center;font-size:.86rem;line-height:1.15}
   .anav .abtn{min-height:2.45rem}
@@ -930,7 +998,19 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 /* ---- home: the tour button, and the Saved tab ---- */
 .buildline{margin:1.5rem 0 0;text-align:center;font:500 .72rem/1.3 var(--ui);color:var(--muted);opacity:.8}
 .hometop{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem}
-.homeacts{display:flex;gap:.45rem;flex-wrap:wrap}
+/* Share, Submit feedback or bugs and Demo stay on one line together. On a narrow phone the labels are what matter,
+   so the row tightens and the icons step aside before any label is allowed to wrap. */
+.homeacts{display:flex;gap:.45rem;flex-wrap:nowrap;min-width:0}
+@media (max-width:820px){
+  .homeacts{gap:.3rem}
+  .homeacts .tourbtn{font-size:.78rem;padding:.34rem .55rem;gap:.3rem}
+  .homeacts .sharebtn svg{width:.95rem;height:.95rem}
+  .homeacts #tourBtn .play{width:1.05rem;height:1.05rem}
+}
+@media (max-width:520px){
+  .homeacts .tourbtn{font-size:.72rem;padding:.32rem .45rem}
+  .homeacts .sharebtn svg,.homeacts #tourBtn .play{display:none}
+}
 .sharebtn{padding:.38rem .8rem .38rem .6rem}
 .sharebtn svg{width:1.05rem;height:1.05rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .sharepanel{position:absolute;right:0;top:calc(100% + 6px);z-index:17;width:min(22rem,100%);box-sizing:border-box;display:grid;gap:.55rem;padding:.8rem;background:var(--sheet);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 36px rgba(0,0,0,.16)}
@@ -996,6 +1076,21 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 .savedpill,.bmpill{display:inline-flex;align-items:center;gap:.15rem;font-size:.72rem;font-weight:700}
 .savedpill{color:var(--gold)} .bmpill{color:var(--green)}
 .savedpill .ico,.bmpill .ico{width:.8rem;height:.8rem;fill:currentColor;stroke:none}
+
+/* Dragging on past the last page opens the next surah, but only deliberately: the next surah slides in behind the
+   finger the whole way and only commits past half the screen, so an ordinary page turn can never trip it. */
+.edgepeek{position:fixed;inset-block:0;width:78vw;max-width:26rem;z-index:8;display:grid;align-content:center;
+  justify-items:center;gap:.4rem;padding:1rem;background:var(--sheet);border-inline:1px solid var(--line);
+  box-shadow:0 0 40px rgba(0,0,0,.22);pointer-events:none;will-change:transform}
+.edgepeek[hidden]{display:none!important}
+.edgepeek.from-left{left:0;transform:translateX(-100%)}
+.edgepeek.from-right{right:0;transform:translateX(100%)}
+.edgepeek.settle{transition:transform .22s ease}
+.edgepeek b{font:700 1.35rem/1.15 var(--display);text-align:center;text-wrap:balance}
+.edgepeek span{font-size:.85rem;color:var(--muted);text-align:center}
+.edgepeek i{font-style:normal;font-size:.76rem;font-weight:700;color:var(--green);opacity:.55}
+.edgepeek.ready i{opacity:1}
+.edgepeek.ready{border-color:var(--green)}
 
 /* ---- the tour ---- */
 .tour{position:fixed;inset:0;z-index:60;pointer-events:none}
@@ -1210,8 +1305,8 @@ try {
       <div class="hometop"><h1>All surahs</h1>
         <div class="homeacts">
           <button type="button" class="tourbtn sharebtn" id="shareBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="sharePanel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v11M7.5 8 12 3.5 16.5 8M8 11H6.5A1.5 1.5 0 0 0 5 12.5v7A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/></svg>Share</button>
-          <button type="button" class="tourbtn sharebtn" id="fbBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="fbPanel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.4-4.4A7.5 7.5 0 1 1 20 11.5z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>Feedback</button>
-          <button type="button" class="tourbtn" id="tourBtn"><span class="play" aria-hidden="true"></span>How it works</button>
+          <button type="button" class="tourbtn sharebtn" id="fbBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="fbPanel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.4-4.4A7.5 7.5 0 1 1 20 11.5z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>Submit feedback or bugs</button>
+          <button type="button" class="tourbtn" id="tourBtn"><span class="play" aria-hidden="true"></span>Demo</button>
           <form class="sharepanel fbpanel" id="fbPanel" role="dialog" aria-label="Send feedback" hidden>
             <b class="sharehead">Send feedback</b>
             <p class="fbnote">Ideas, problems, anything you'd like to see. It goes straight to the person who makes QuranFlow.</p>
@@ -1279,6 +1374,13 @@ try {
       <div class="pbar" id="pbar" hidden></div>
       <div class="bar" id="sBar">
         <div class="hint" id="hint"></div>
+        <div class="uncover" id="allAr" hidden>
+          <span class="unclbl">Uncover all</span>
+          <span class="langtog" role="group" aria-label="Uncover every section as">
+            <button type="button" data-view="en" aria-pressed="true">Explanations</button>
+            <button type="button" data-view="ar" aria-pressed="false">Arabic</button>
+          </span>
+        </div>
       </div>
       <div class="strip" id="strip" role="group" aria-label="Sections" title="Hold any section for its ayah-by-ayah translations"></div>
       <div class="pagewrap">
@@ -1297,12 +1399,14 @@ try {
     </div>
     <div class="dock" id="dock" hidden></div>
     <div class="ayahpop" id="ayahPop" role="dialog" aria-label="This ayah" hidden></div>
+    <div class="edgepeek" id="edgePeek" hidden aria-hidden="true"><b></b><span></span><i></i></div>
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
         <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
         <button type="button" class="abtn stuck" id="a-stuck">I’m stuck</button>
         <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
+        <span class="abtn here" id="a-here" aria-current="page" hidden></span>
         <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
       </div>
     </nav>
@@ -1331,8 +1435,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=6a27ca77f0"></script>
-<script src="app.js?v=6a27ca77f0"></script>
+<script src="data/index.js?v=15140fab27"></script>
+<script src="app.js?v=15140fab27"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
