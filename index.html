@@ -269,6 +269,10 @@ a.js:hover{border-color:var(--gold)}
 .pages.en .enlines,.pages.ar .enlines{display:grid}
 /* Arabic page: the English blocks wait out of sight until you tap a section */
 .pages.ar .enb{visibility:hidden;pointer-events:none}
+/* Practice, rest hidden: a neighbouring surah gets Learn’s greyed, named block so it cannot be read ahead.
+   Only .go blocks — the other kinds label the OPEN surah’s own header and basmala, which must stay as the
+   muṣḥaf has them while practising. */
+.pages.ar.hidenbr .enb.other.go{visibility:visible;pointer-events:auto}
 .pages.ar .enb.swapped{visibility:visible;pointer-events:auto}
 .enb{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;box-sizing:border-box;cursor:pointer;display:grid;align-content:start;gap:.2cqi;padding:.6cqi 1.2cqi;border:1px solid transparent;border-radius:5px;overflow:hidden;text-align:start;font:inherit;color:var(--ink)}
 .enh{display:flex;align-items:baseline;gap:.5rem;font-size:2.5cqi}
@@ -1435,8 +1439,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=312b6afd1c"></script>
-<script src="app.js?v=312b6afd1c"></script>
+<script src="data/index.js?v=785ade75e0"></script>
+<script src="app.js?v=785ade75e0"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
