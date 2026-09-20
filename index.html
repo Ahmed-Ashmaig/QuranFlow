@@ -149,8 +149,13 @@ h1.stitle .ar{font:400 .95em/1.2 var(--q);color:var(--green)}
 .juzcard{gap:.6rem}
 .jhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.3rem 1rem}
 [hidden]{display:none!important}
-.juzline-wrap{direction:rtl;overflow-x:auto;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
-.juzline{direction:rtl;display:flex;gap:6px;padding-block:2px}
+/* The arrows sit either side of the surahs, in muṣḥaf order: the later juz to the left, the earlier to the
+   right. A juz with only a surah or two centres rather than hugging one edge — "safe" so a row too wide to
+   fit still starts at its own beginning instead of being clipped. */
+.juzrow{display:flex;align-items:stretch;gap:.4rem;min-width:0}
+.juzrow .jarrow{flex:none;align-self:stretch;display:grid;place-items:center;padding-inline:.55rem}
+.juzline-wrap{flex:1 1 auto;min-width:0;direction:rtl;overflow-x:auto;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
+.juzline{direction:rtl;display:flex;gap:6px;padding-block:2px;justify-content:safe center;min-width:100%}
 .js{flex:none;min-width:5.6rem;display:grid;justify-items:center;align-content:start;gap:.05rem;padding:.5rem .3rem .45rem;border-radius:8px;background:var(--sheet);border:1px solid var(--line);border-top-width:4px;text-align:center;text-decoration:none;color:var(--ink)}
 .js .jn{font:700 .78rem/1.2 var(--ui);color:var(--muted);font-variant-numeric:tabular-nums}
 .js .jar{font:400 1.3rem/2.1 var(--q);margin-bottom:.15rem}
@@ -1422,12 +1427,12 @@ try {
           <div class="foldbody"><p class="theme" id="theme"></p><div class="whybody" id="whyBody"></div></div></details>
       </div>
       <div class="where" id="sWhere">
-        <div class="jhead">
+        <div class="jhead"><span class="lbl" id="jLbl"></span><span class="src" id="jRange"></span></div>
+        <div class="juzrow">
           <button type="button" class="jarrow" id="jLater" aria-label="Show the next juz">‹</button>
-          <span class="lbl" id="jLbl"></span><span class="src" id="jRange"></span>
+          <div class="juzline-wrap"><div class="juzline" id="jline"></div></div>
           <button type="button" class="jarrow" id="jEarlier" aria-label="Show the previous juz">›</button>
         </div>
-        <div class="juzline-wrap"><div class="juzline" id="jline"></div></div>
         <div class="qpos"><div class="quran-bar" id="qbar" aria-hidden="true"></div>
           <div class="ends"><span>Page 604</span><span id="posTxt"></span><span>Page 1</span></div></div>
       </div>
