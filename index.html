@@ -177,6 +177,14 @@ a.js:hover{border-color:var(--gold)}
 /* feature menu in the top bar: one part of the surah at a time */
 .feat{position:relative;margin-inline-start:auto}
 .feat:not([hidden]) + .navbtns{margin-inline-start:0}
+/* One press, either way: the two modes sit side by side and the one you are in is filled. */
+.modetog{display:inline-flex;flex:none;gap:2px;padding:2px;border:1.5px solid var(--ink);border-radius:11px;
+  background:var(--sheet)}
+.modetog[hidden]{display:none!important}
+.modetog button{all:unset;box-sizing:border-box;cursor:pointer;font:700 .85rem/1 var(--ui);color:var(--ink);
+  padding:.4rem .7rem;border-radius:8px;text-align:center;white-space:nowrap}
+.modetog button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.modetog button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .featbtn{display:inline-flex;align-items:center;gap:.5rem;font:700 .95rem/1 var(--ui);color:var(--ink);background:var(--sheet);border:1px solid var(--ink);border-radius:11px;padding:.5rem .9rem;cursor:pointer;white-space:nowrap}
 .featbtn .caret{font-size:.8rem;transition:transform .15s}
 .featbtn[aria-expanded="true"] .caret{transform:rotate(180deg)}
@@ -1372,12 +1380,9 @@ try {
   <nav class="topbar" aria-label="App">
     <a class="homebtn here" id="homebtn" href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>All surahs</a>
     <div class="crumb" id="crumb"></div>
-    <div class="feat" id="feat" hidden>
-      <button type="button" class="featbtn" id="featBtn" aria-haspopup="true" aria-expanded="false" aria-controls="featMenu"><span id="featName">Learn</span><span class="caret" aria-hidden="true">▾</span></button>
-      <div class="featmenu" id="featMenu" role="menu" hidden>
-        <button type="button" role="menuitem" id="f-learn" data-mode="learn"><b>Learn</b><span>Read and understand: the ayah, the section, look-alike ayat</span></button>
-        <button type="button" role="menuitem" id="f-practice" data-mode="practice"><b>Practice</b><span>Test yourself: by section, at a random spot, or your weak spots</span></button>
-      </div>
+    <div class="feat modetog" id="feat" role="group" aria-label="Learn or practice" hidden>
+      <button type="button" id="f-learn" data-mode="learn" aria-pressed="true">Learn</button>
+      <button type="button" id="f-practice" data-mode="practice" aria-pressed="false">Practice</button>
     </div>
     <div class="navbtns" id="navbtns"></div>
   </nav>
@@ -1519,8 +1524,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=7a67396284"></script>
-<script src="app.js?v=7a67396284"></script>
+<script src="data/index.js?v=17753a9a73"></script>
+<script src="app.js?v=17753a9a73"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
