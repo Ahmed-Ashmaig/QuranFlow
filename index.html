@@ -447,12 +447,15 @@ a.js:hover{border-color:var(--gold)}
 .stage.learn #pages .w.s.curayah{box-shadow:inset 0 -.1em 0 var(--gold)!important}
 .lnb1{--lnc:var(--s1e)} .lnb2{--lnc:var(--s2e)} .lnb3{--lnc:var(--s3e)} .lnb4{--lnc:var(--s4e)}
 .lnb5{--lnc:var(--s5e)} .lnb6{--lnc:var(--s6e)} .lnb7{--lnc:var(--s7e)} .lnb8{--lnc:var(--s8e)}
-.stage.learn #pages .ln{position:relative}
+#pages .ln{position:relative}
 /* One continuous rule down the right-hand edge, in the page's own padding so the text keeps every pixel of its
    width. The segments meet edge to edge, so a section reads as an unbroken line that simply changes colour
-   where the next one starts; a line with no section of this surah on it leaves a real gap. */
-.stage.learn #pages .ln::after{content:"";position:absolute;inset-inline-start:-.26rem;top:0;bottom:0;
+   where the next one starts; a line with no section of this surah on it leaves a real gap. Both modes. */
+#pages .ln::after{content:"";position:absolute;inset-inline-start:-.26rem;top:0;bottom:0;
   width:.19rem;background:var(--lnc,transparent)}
+/* and where one section gives way to the next, a dotted rule across the line above it */
+#pages .ln.lnsep::before{content:"";position:absolute;inset-inline:0;top:0;height:0;
+  border-top:1px dotted var(--lnc,var(--line));opacity:.75}
 /* Practice is not about where the sections are, so the colour bands come off and the page reads as the
    muṣḥaf does. The single current-ayah underline stays — that is position, not section colouring. */
 .stage.practice #pages .w.s:not(.veil):not(.sel){background:transparent}
@@ -1489,8 +1492,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=0e78f7aadf"></script>
-<script src="app.js?v=0e78f7aadf"></script>
+<script src="data/index.js?v=4d33190967"></script>
+<script src="app.js?v=4d33190967"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
