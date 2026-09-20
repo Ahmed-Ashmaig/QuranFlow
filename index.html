@@ -492,16 +492,19 @@ a.js:hover{border-color:var(--gold)}
   font:700 .76rem/1.15 var(--ui);text-align:center;white-space:normal;overflow-wrap:anywhere}
 .abtn.ok{background:var(--green);color:var(--sheet)}
 .abtn.next{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
-.abtn.mark{background:var(--sheet);color:var(--red);border-color:var(--red)}
+/* One look for the whole bar: ink on sheet. Colour is kept for states that mean something - a weak spot that
+   IS marked, and the right/wrong answers in Random spot - not for telling the buttons apart. */
+.abtn.mark,.abtn.stuck{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
 .abtn.mark.on,.abtn.miss{background:var(--red);color:var(--sheet);border-color:var(--red)}
-.abtn.stuck{background:var(--sheet);color:var(--gold);border-color:var(--gold)}
 .abtn.reveal{background:var(--sheet);color:var(--green);border-color:var(--green)}
 .abtn.prev{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
 /* Not a control — the same chip the header uses, so both bars read the same way. */
 .abtn.here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;
   display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
 /* An inactive button still has to be readable: say it with a muted palette, not by fading the text out. */
-.abtn:disabled{cursor:default;opacity:1;background:var(--paper);color:var(--muted);border-color:var(--line)}
+/* Inactive keeps the same ground and shape, but the rule and the lettering both soften: that is the signal
+   that the button cannot be pressed yet. */
+.abtn:disabled{cursor:default;opacity:1;background:var(--sheet);color:var(--muted);border-color:var(--line)}
 .abtn:disabled small{opacity:1}
 .abtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .anav-mid{display:grid;justify-items:center;gap:.2rem;min-width:0}
@@ -1109,7 +1112,12 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 
 /* Dragging on past the last page opens the next surah, but only deliberately: the next surah slides in behind the
    finger the whole way and only commits past half the screen, so an ordinary page turn can never trip it. */
-.edgepeek{position:fixed;inset-block:0;width:78vw;max-width:26rem;z-index:8;display:grid;align-content:center;
+/* The panel holds a real page now, so the rows are named: surah, number, the page itself, then the hint. */
+/* The panel centres its children, which would shrink this to the page’s own content width. */
+.peekpage{min-height:0;width:100%;justify-self:stretch;display:grid;align-content:center;justify-items:stretch;overflow:hidden}
+.peekpage .page{width:100%;max-width:100%;box-shadow:none;justify-self:stretch}
+.edgepeek{position:fixed;inset-block:0;width:78vw;max-width:26rem;z-index:8;display:grid;
+  grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;align-content:stretch;
   justify-items:center;gap:.4rem;padding:1rem;background:var(--sheet);border-inline:1px solid var(--line);
   box-shadow:0 0 40px rgba(0,0,0,.22);pointer-events:none;will-change:transform}
 .edgepeek[hidden]{display:none!important}
@@ -1428,7 +1436,7 @@ try {
     </div>
     <div class="dock" id="dock" hidden></div>
     <div class="ayahpop" id="ayahPop" role="dialog" aria-label="This ayah" hidden></div>
-    <div class="edgepeek" id="edgePeek" hidden aria-hidden="true"><b></b><span></span><i></i></div>
+    <div class="edgepeek" id="edgePeek" hidden aria-hidden="true"><b></b><span></span><div class="peekpage"></div><i></i></div>
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
@@ -1468,8 +1476,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=75b0955fa2"></script>
-<script src="app.js?v=75b0955fa2"></script>
+<script src="data/index.js?v=9174e71fd0"></script>
+<script src="app.js?v=9174e71fd0"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
