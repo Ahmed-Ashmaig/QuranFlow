@@ -98,7 +98,14 @@ p{margin:0}
   border:2px solid transparent;padding:.22rem .6rem;text-decoration:none;display:flex;flex-direction:column;justify-content:center}
 .navbtns a.next{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
 .navbtns a.prev{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
-.navbtns .here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;overflow:hidden}
+/* The open surah is the anchor of the bar: wider, its name larger and in the accent, so a glance finds it. */
+.navbtns .here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;overflow:hidden;
+  padding-block:.3rem}
+/* The shared .abtn>.blbl rule sits later in this sheet at equal specificity, so these carry an id to win. */
+#navbtns .here>.blbl{font-size:.92rem;color:var(--green);letter-spacing:-.01em}
+#navbtns .here>small{font-size:.62rem;font-weight:600;opacity:.8}
+#navbtns a>.blbl{font-size:.64rem}
+#navbtns a>small{font-size:.6rem}
 .navbtns .here[aria-expanded="true"]{background:var(--ink);color:var(--sheet)}
 /* Only the surah name ellipsises; the label line above it is short enough to always fit. */
 .navbtns a small,.navbtns .here small{display:block;font-size:.66rem;font-weight:700;line-height:1.1;margin-top:1px;
@@ -800,7 +807,7 @@ details[open]>summary .more::before{content:"▾ Close"}
   .crumb{display:none}
   .feat{margin-inline-start:auto}
   .featmenu{min-width:min(18rem,calc(100vw - 32px))}
-  .navbtns{order:9;flex-basis:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:.3rem}
+  .navbtns{order:9;flex-basis:100%;display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.56fr) minmax(0,.72fr);gap:.3rem}
   .feat:not([hidden]) + .navbtns{margin-inline-start:0}
   .navbtns a{text-align:center}
   .hint{text-align:center}
@@ -985,7 +992,7 @@ body.nosel,body.nosel *{-webkit-user-select:none!important;user-select:none!impo
 @media (min-width:701px) and (max-width:860px){
   body.in-surah .topbar{flex-wrap:wrap;row-gap:.45rem}
   body.in-surah .feat{margin-inline-start:auto}
-  body.in-surah .navbtns{order:9;flex-basis:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:.3rem;margin-inline-start:0}
+  body.in-surah .navbtns{order:9;flex-basis:100%;display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.56fr) minmax(0,.72fr);gap:.3rem;margin-inline-start:0}
   body.in-surah .navbtns a{text-align:center}
 }
 @media (max-width:359px){body.in-surah .homebtn svg{display:none}}
@@ -1440,13 +1447,7 @@ try {
       <div class="pbar" id="pbar" hidden></div>
       <div class="bar" id="sBar">
         <div class="hint" id="hint"></div>
-        <div class="uncover" id="allAr" hidden>
-          <span class="unclbl">Uncover all</span>
-          <span class="langtog" role="group" aria-label="Uncover every section as">
-            <button type="button" data-view="en" aria-pressed="true">Explanations</button>
-            <button type="button" data-view="ar" aria-pressed="false">Arabic</button>
-          </span>
-        </div>
+        <button type="button" class="eyechip wide" id="allAr" hidden aria-pressed="false"></button>
       </div>
       <div class="strip" id="strip" role="group" aria-label="Sections" title="Hold any section for its ayah-by-ayah translations"></div>
       <div class="pagewrap">
@@ -1505,8 +1506,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=01e351b9f9"></script>
-<script src="app.js?v=01e351b9f9"></script>
+<script src="data/index.js?v=43d4a4f4ef"></script>
+<script src="app.js?v=43d4a4f4ef"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
