@@ -385,11 +385,11 @@ a.js:hover{border-color:var(--gold)}
 /* go to an ayah: the surah list and the ayah list side by side, each scrolling on its own */
 .gopanel{position:absolute;inset-inline:0;top:calc(100% + 6px);z-index:16;padding:.55rem;background:var(--sheet);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 36px rgba(0,0,0,.16)}
 /* Three ways in: a surah with its ayah, or any page of the muṣḥaf on its own. */
-.gocols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,.8fr) minmax(0,.8fr);gap:.5rem}
+.gocols{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.7fr) minmax(0,.8fr);gap:.5rem}
 .gocol{display:grid;gap:.3rem;min-width:0}
 .gocol .lbl{padding-inline:.4rem}
 /* The button shows the picker's two slots, each a dash until it is settled. */
-.gopick{display:flex;align-items:center;gap:.5rem;min-width:0}
+.gopick{display:flex;align-items:center;gap:.42rem;min-width:0}
 .gopick > span{display:flex;align-items:baseline;gap:.3rem;white-space:nowrap}
 .gopick i{font-style:normal;font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .golist.locked{display:grid;place-items:center;opacity:.65}
@@ -1500,12 +1500,12 @@ try {
           <input type="search" id="surahSearch" placeholder="Search surah names or words in an ayah" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Search surahs and ayat" aria-controls="surahResults">
           <div class="sresults" id="surahResults" role="listbox" aria-label="Matching surahs and ayat" hidden></div>
         </div>
-        <button type="button" class="gobtn" id="goBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="goPanel" aria-label="Pick a surah and an ayah"><span class="gopick" id="goPick"><span><i>Surah</i>—</span><span><i>Ayah</i>—</span></span><span class="caret" aria-hidden="true">▾</span></button>
+        <button type="button" class="gobtn" id="goBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="goPanel" aria-label="Pick a surah and an ayah"><span class="gopick" id="goPick"><span><i>Page</i>—</span><span><i>Surah</i>—</span><span><i>Ayah</i>—</span></span><span class="caret" aria-hidden="true">▾</span></button>
         <div class="gopanel" id="goPanel" role="dialog" aria-label="Go to an ayah" hidden>
           <div class="gocols">
+            <div class="gocol gopage"><span class="lbl">Page</span><div class="golist goayat" id="goPages" role="listbox" aria-label="Muṣḥaf page, 1 to 604"></div></div>
             <div class="gocol"><span class="lbl">Surah</span><div class="golist" id="goSurahs" role="listbox" aria-label="Surah"></div></div>
             <div class="gocol"><span class="lbl">Ayah</span><div class="golist goayat" id="goAyat" role="listbox" aria-label="Ayah"></div></div>
-            <div class="gocol gopage"><span class="lbl">Page</span><div class="golist goayat" id="goPages" role="listbox" aria-label="Muṣḥaf page, 1 to 604"></div></div>
           </div>
         </div>
       </div>
@@ -1606,8 +1606,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=2402a128af"></script>
-<script src="app.js?v=2402a128af"></script>
+<script src="data/index.js?v=4fb3e62563"></script>
+<script src="app.js?v=4fb3e62563"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
