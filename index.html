@@ -387,6 +387,12 @@ a.js:hover{border-color:var(--gold)}
 .gocols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:.5rem}
 .gocol{display:grid;gap:.3rem;min-width:0}
 .gocol .lbl{padding-inline:.4rem}
+/* The button shows the picker's two slots, each a dash until it is settled. */
+.gopick{display:flex;align-items:center;gap:.5rem;min-width:0}
+.gopick > span{display:flex;align-items:baseline;gap:.3rem;white-space:nowrap}
+.gopick i{font-style:normal;font-size:.62rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.golist.locked{display:grid;place-items:center;opacity:.65}
+.golocked{margin:0;font:600 .8rem var(--ui);color:var(--muted);text-align:center;padding:.8rem .4rem}
 .golist{max-height:min(46vh,19rem);overflow-y:auto;overscroll-behavior:contain;display:grid;align-content:start;gap:2px;padding:2px;border-radius:10px;background:var(--paper);scrollbar-width:thin}
 .goitem{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:baseline;gap:.55rem;padding:.55rem .65rem;border-radius:8px;color:var(--ink)}
 .goitem b{min-width:1.9rem;font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -1493,7 +1499,7 @@ try {
           <input type="search" id="surahSearch" placeholder="Search surah names or words in an ayah" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Search surahs and ayat" aria-controls="surahResults">
           <div class="sresults" id="surahResults" role="listbox" aria-label="Matching surahs and ayat" hidden></div>
         </div>
-        <button type="button" class="gobtn" id="goBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="goPanel">Go to ayah<span class="caret" aria-hidden="true">▾</span></button>
+        <button type="button" class="gobtn" id="goBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="goPanel" aria-label="Pick a surah and an ayah"><span class="gopick" id="goPick"><span><i>Surah</i>—</span><span><i>Ayah</i>—</span></span><span class="caret" aria-hidden="true">▾</span></button>
         <div class="gopanel" id="goPanel" role="dialog" aria-label="Go to an ayah" hidden>
           <div class="gocols">
             <div class="gocol"><span class="lbl">Surah</span><div class="golist" id="goSurahs" role="listbox" aria-label="Surah"></div></div>
@@ -1598,8 +1604,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=361dc44368"></script>
-<script src="app.js?v=361dc44368"></script>
+<script src="data/index.js?v=98de09f5b0"></script>
+<script src="app.js?v=98de09f5b0"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
