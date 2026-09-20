@@ -582,8 +582,10 @@ a.js:hover{border-color:var(--gold)}
 .abtn.reveal{background:var(--sheet);color:var(--green);border-color:var(--green)}
 .abtn.prev{background:var(--sheet);color:var(--ink);border-color:var(--ink)}
 /* Not a control — the same chip the header uses, so both bars read the same way. */
+/* Stacked, like every other button in this bar: laid out in a row the label and the line under it each got
+   half the width, which is what forced the ellipsis. */
 .abtn.here{background:var(--sheet);color:var(--ink);border-color:var(--ink);font-weight:700;
-  display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
+  display:flex;flex-direction:column;align-items:stretch;justify-content:center;min-width:0;overflow:hidden}
 /* An inactive button still has to be readable: say it with a muted palette, not by fading the text out. */
 /* Inactive keeps the same ground and shape, but the rule and the lettering both soften: that is the signal
    that the button cannot be pressed yet. */
@@ -1596,8 +1598,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=5da006142e"></script>
-<script src="app.js?v=5da006142e"></script>
+<script src="data/index.js?v=361dc44368"></script>
+<script src="app.js?v=361dc44368"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
