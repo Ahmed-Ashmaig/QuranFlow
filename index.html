@@ -928,7 +928,7 @@ details[open]>summary .more::before{content:"▾ Close"}
   .anav-mark{font-size:.68rem;padding:0 .45rem;line-height:1.5}
   .anav-view{font-size:.7rem;line-height:1.2}
   /* the note about tapping and holding a section belongs beside the page, not a screen below it */
-  #sBar{display:block;margin:0}
+  #sBar{display:flex;align-items:center;justify-content:flex-end;margin:0}
   #sBar .hint{font-size:.72rem;line-height:1.25;text-align:center}
   /* the bar slides away on the intro screen and returns on the sections screen */
   .anav,.dock{transition:transform .25s ease}
@@ -1154,6 +1154,21 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
   justify-items:center;gap:.4rem;padding:1rem;background:var(--sheet);border-inline:1px solid var(--line);
   box-shadow:0 0 40px rgba(0,0,0,.22);pointer-events:none;will-change:transform}
 .edgepeek[hidden]{display:none!important}
+/* The eye sits at the same edge in both modes: Practice puts it at the end of its scope row, so Learn's goes
+   to the end of its bar rather than the start. With the hint line gone, that bar is only the eye. */
+#sBar{display:flex;align-items:center;justify-content:flex-end}
+#allAr{margin-inline-start:auto}
+/* Theme and context, raised from the chip that names where you are. Same in Learn and Practice, so the button
+   behaves the same wherever it is pressed. */
+.ctxsheet{position:fixed;z-index:12;inset-inline:0;bottom:0;max-height:76vh;display:grid;
+  grid-template-rows:auto minmax(0,1fr);background:var(--sheet);border-top:2px solid var(--ink);
+  border-radius:14px 14px 0 0;box-shadow:0 -14px 40px rgba(0,0,0,.24)}
+.ctxsheet[hidden]{display:none!important}
+.ctxhead{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem .9rem .5rem;
+  border-bottom:1px solid var(--line)}
+.ctxhead h2{margin:0;font:700 1.02rem/1.2 var(--display);color:var(--ink)}
+.ctxbody{overflow-y:auto;padding:.7rem .9rem 1.1rem;display:grid;gap:.6rem;overscroll-behavior:contain}
+.ctxbody .sub{font-size:.82rem;color:var(--muted)}
 .edgepeek.from-left{left:0;transform:translateX(-100%)}
 .edgepeek.from-right{right:0;transform:translateX(100%)}
 .edgepeek.settle{transition:transform .22s ease}
@@ -1425,14 +1440,6 @@ try {
     <div id="surahBody" hidden>
      <div class="stage" id="stage">
      <div class="screen" id="scr2">
-      <div class="card intro" id="sHead">
-        <div class="sheadrow">
-          <h1 class="stitle" id="sTitle"></h1>
-        </div>
-        <div class="sub" id="sub"></div>
-        <details class="fold introfold" id="introFold"><summary>Theme and context</summary>
-          <div class="foldbody"><p class="theme" id="theme"></p><div class="whybody" id="whyBody"></div></div></details>
-      </div>
       <div class="where" id="sWhere">
         <div class="jhead"><span class="lbl" id="jLbl"></span><span class="src" id="jRange"></span></div>
         <div class="juzrow">
@@ -1447,7 +1454,7 @@ try {
       <div class="pbar" id="pbar" hidden></div>
       <div class="bar" id="sBar">
         <div class="hint" id="hint"></div>
-        <button type="button" class="eyechip wide" id="allAr" hidden aria-pressed="false"></button>
+        <button type="button" class="eyechip" id="allAr" hidden aria-pressed="false"></button>
       </div>
       <div class="strip" id="strip" role="group" aria-label="Sections" title="Hold any section for its ayah-by-ayah translations"></div>
       <div class="pagewrap">
@@ -1466,6 +1473,12 @@ try {
     </div>
     <div class="dock" id="dock" hidden></div>
     <div class="ayahpop" id="ayahPop" role="dialog" aria-label="This ayah" hidden></div>
+    <div class="ctxsheet" id="ctxSheet" hidden role="dialog" aria-label="Theme and context">
+      <div class="ctxhead"><h2 id="ctxTitle"></h2>
+        <button type="button" class="svback" id="ctxClose">Close</button></div>
+      <div class="ctxbody"><div class="sub" id="ctxSub"></div>
+        <p class="theme" id="ctxTheme"></p><div class="whybody" id="ctxWhy"></div></div>
+    </div>
     <div class="edgepeek" id="edgePeek" hidden aria-hidden="true"><b></b><span></span><div class="peekpage"></div><i></i></div>
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
@@ -1506,8 +1519,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=43d4a4f4ef"></script>
-<script src="app.js?v=43d4a4f4ef"></script>
+<script src="data/index.js?v=7a67396284"></script>
+<script src="app.js?v=7a67396284"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
