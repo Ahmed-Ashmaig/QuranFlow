@@ -289,8 +289,22 @@ a.js:hover{border-color:var(--gold)}
 /* pan-y hands the browser the vertical scroll and keeps the horizontal gesture for us. With touch-action:auto a
    real finger can be claimed by the scroller before a single touchmove reaches JS — which is why the swipe
    worked under synthetic touches and not under a thumb. */
-.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y}
+.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y;position:relative;overflow:hidden}
 .secview #svbody{touch-action:pan-y}
+/* Swiping across a section pulls the next one in over the reading area only: the back button and the section
+   buttons above it stay where they are. What arrives is the section itself — its colour, its title and the start
+   of its text — so the pull reads as the page moving rather than a blank panel sliding over it. */
+.secpeek{position:absolute;inset-inline:0;bottom:0;z-index:4;pointer-events:none;overflow:hidden;
+  background:var(--paper);display:grid;gap:.5rem;align-content:start;padding-inline-end:2px;
+  will-change:transform;box-shadow:0 0 30px rgba(0,0,0,.2)}
+.secpeek[hidden]{display:none!important}
+.secpeek.from-left{transform:translateX(-100%)}
+.secpeek.from-right{transform:translateX(100%)}
+.secpeek.settle{transition:transform .22s ease}
+.secpeek .sva{opacity:.92}
+.secpeek i{font-style:normal;font-size:.74rem;font-weight:700;color:var(--green);opacity:.55;
+  justify-self:center;padding-block:.2rem .5rem}
+.secpeek.ready i{opacity:1}
 .svbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.35rem}
 .svbar > :first-child{justify-self:start}
 .svbar > :last-child{justify-self:end}
@@ -1610,8 +1624,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=ee8c9c9321"></script>
-<script src="app.js?v=ee8c9c9321"></script>
+<script src="data/index.js?v=a445abe8d6"></script>
+<script src="app.js?v=a445abe8d6"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
