@@ -402,6 +402,11 @@ a.js:hover{border-color:var(--gold)}
   display:grid;place-items:center;gap:.1rem}
 .jarrow b{font:700 .58rem/1 var(--ui);white-space:nowrap}
 .jname{font-family:var(--q);font-size:1.05em;color:var(--ink);margin-inline-start:.35em}
+/* the surah’s theme, under its juz strip */
+.jtheme{display:grid;gap:.45rem;padding-block:.5rem;border-top:1px solid var(--line);max-height:34vh;overflow-y:auto}
+.jtheme p{margin:0;font-size:.86rem;line-height:1.5}
+.jtheme .sub{font-size:.78rem;color:var(--muted)}
+.jtheme .theme{font-weight:600}
 .jarrow:disabled b{color:var(--muted)}
 /* says the chip opens something */
 .jcaret{opacity:.75}
@@ -1183,10 +1188,15 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 /* Practice spends the space under its tabs on the translation; Learn spends it on a taller strip, so the page
    starts at the same y in both. The strip is tall enough to show a section title whole rather than clipping it. */
 #scr2 #pbar .striprow{min-height:3.3rem}
-#scr2 #stripRow{min-height:6.2rem}
-#scr2 .striprow .blk{padding-block:.5rem .45rem}
-#scr2 #stripRow .strip{align-items:stretch}
-#scr2 #stripRow .blk{white-space:normal}
+#scr2 #stripRow{min-height:6.2rem;align-items:stretch}
+#scr2 #pbar .striprow .blk{padding-block:.5rem .45rem}
+/* The strip fills the row instead of floating in the middle of it, and the title uses the height it frees:
+   it wraps to as many as three lines rather than being held to one and cut. */
+#scr2 #stripRow .strip{align-self:stretch;grid-auto-columns:minmax(10rem,13rem)}
+#scr2 #stripRow .blk{align-content:center;padding-block:.45rem;gap:.2rem}
+#scr2 #stripRow .blk b{font-size:1.02rem}
+#scr2 #stripRow .blk em{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+  font-size:.86rem;line-height:1.3}
 /* Theme and context, raised from the chip that names where you are. Same in Learn and Practice, so the button
    behaves the same wherever it is pressed. */
 .ctxsheet{position:fixed;z-index:12;inset-inline:0;bottom:0;max-height:76vh;display:grid;
@@ -1473,6 +1483,7 @@ try {
           <div class="juzline-wrap"><div class="juzline" id="jline"></div></div>
           <button type="button" class="jarrow" id="jEarlier" aria-label="Show the previous juz">›</button>
         </div>
+        <div class="jtheme" id="jTheme"></div>
         <div class="qpos"><div class="quran-bar" id="qbar" aria-hidden="true"></div>
           <div class="ends"><span>Page 604</span><span id="posTxt"></span><span>Page 1</span></div></div>
       </div>
@@ -1547,8 +1558,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=0cde7002b7"></script>
-<script src="app.js?v=0cde7002b7"></script>
+<script src="data/index.js?v=69a2d8a0dd"></script>
+<script src="app.js?v=69a2d8a0dd"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
