@@ -225,7 +225,10 @@ a.js:hover{border-color:var(--gold)}
 .w{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;padding-inline:.08em;border-radius:3px;cursor:pointer;transition:opacity .2s}   /* no colour fades: a step restyles hundreds of words, and a reveal should be instant */
 .w.s1{background:var(--s1)} .w.s2{background:var(--s2)} .w.s3{background:var(--s3)} .w.s4{background:var(--s4)}
 .w.s5{background:var(--s5)} .w.s6{background:var(--s6)} .w.s7{background:var(--s7)} .w.s8{background:var(--s8)}
-.w.o{opacity:.3;cursor:default}
+.w.o{opacity:.3}
+/* the neighbouring surah on this page is a door into it, not decoration */
+.w.o.go{cursor:pointer}
+.w.o.go:hover{opacity:.55}
 .w.s.dim{opacity:.3;background:transparent}
 .w.focus{background:var(--focusw)!important;opacity:1!important;box-shadow:0 0 0 1px var(--gold)}
 .e{display:inline-flex;align-items:center;justify-content:center;min-width:1.35em;height:1.35em;border:1px solid var(--gold);border-radius:50%;font-size:.62em;line-height:1;color:var(--gold);padding-inline:.15em;box-sizing:border-box;padding-block-end:.26em}
@@ -470,7 +473,12 @@ a.js:hover{border-color:var(--gold)}
 /* the step bar: a counter over four equal buttons, each a different colour so a thumb finds the right one */
 .anav{grid-template-columns:minmax(0,1fr);row-gap:.3rem}
 .anav .anav-where{justify-self:center}
-.anav-btns{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.4rem}
+.anav-btns{display:grid;gap:.4rem}
+.anavrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.4rem}
+.anavrow:empty,.anavrow.off{display:none}
+/* The label keeps one line and ellipsises if it must; the ayah it leads to sits underneath it. */
+.abtn>.lbl{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:.68rem}
+.abtn{font-size:.72rem}
 .abtn{cursor:pointer;min-height:2.75rem;padding:.3rem .25rem;border-radius:11px;border:2px solid transparent;
   font:700 .76rem/1.15 var(--ui);text-align:center;white-space:normal;overflow-wrap:anywhere}
 .abtn.next,.abtn.ok{background:var(--green);color:var(--sheet)}
@@ -1414,11 +1422,15 @@ try {
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
-        <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
-        <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
-        <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
-        <span class="abtn here" id="a-here" aria-current="page" hidden></span>
-        <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
+        <div class="anavrow" id="a-rowdo">
+          <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
+          <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
+        </div>
+        <div class="anavrow" id="a-rowgo">
+          <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
+          <span class="abtn here" id="a-here" aria-current="page" hidden></span>
+          <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
+        </div>
       </div>
     </nav>
   </section>
@@ -1446,8 +1458,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=e147298d48"></script>
-<script src="app.js?v=e147298d48"></script>
+<script src="data/index.js?v=c3aee4f9e1"></script>
+<script src="app.js?v=c3aee4f9e1"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
