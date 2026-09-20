@@ -401,6 +401,7 @@ a.js:hover{border-color:var(--gold)}
   background:var(--sheet);border:1.5px solid var(--ink);border-radius:11px;padding:.1rem .45rem;text-align:center;
   display:grid;place-items:center;gap:.1rem}
 .jarrow b{font:700 .58rem/1 var(--ui);white-space:nowrap}
+.jname{font-family:var(--q);font-size:1.05em;color:var(--ink);margin-inline-start:.35em}
 .jarrow:disabled b{color:var(--muted)}
 /* says the chip opens something */
 .jcaret{opacity:.75}
@@ -1174,12 +1175,18 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
    Practice, so switching does not move it. */
 .striprow{display:flex;align-items:center;gap:.4rem;min-width:0}
 .striprow > .strip,.striprow > .ltabs{flex:1 1 auto;min-width:0}
-.striprow > .eyechip{flex:none;align-self:center}
+/* Pinned to the top of the row, not its middle: Learn's row is taller, and a centred eye would sit lower there
+   and appear to jump when the mode changes. */
+.striprow > .eyechip{flex:none;align-self:flex-start;margin-block-start:.32rem}
 /* A phone-width rule pins the strip to flex:none, which would shove the eye off the screen. */
 #scr2 .striprow > .strip{flex:1 1 auto;min-width:0}
-/* Both rows share one height, so the page starts at the same y whichever mode you are in. */
-#scr2 .striprow{min-height:3.3rem}
-#scr2 .striprow .blk{padding-block:.6rem .55rem}
+/* Practice spends the space under its tabs on the translation; Learn spends it on a taller strip, so the page
+   starts at the same y in both. The strip is tall enough to show a section title whole rather than clipping it. */
+#scr2 #pbar .striprow{min-height:3.3rem}
+#scr2 #stripRow{min-height:6.2rem}
+#scr2 .striprow .blk{padding-block:.5rem .45rem}
+#scr2 #stripRow .strip{align-items:stretch}
+#scr2 #stripRow .blk{white-space:normal}
 /* Theme and context, raised from the chip that names where you are. Same in Learn and Practice, so the button
    behaves the same wherever it is pressed. */
 .ctxsheet{position:fixed;z-index:12;inset-inline:0;bottom:0;max-height:76vh;display:grid;
@@ -1478,12 +1485,12 @@ try {
         <div class="strip" id="strip" role="group" aria-label="Sections" title="Hold any section for its ayah-by-ayah translations"></div>
         <button type="button" class="eyechip" id="allAr" hidden aria-pressed="false"></button>
       </div>
+      <div class="nowline" id="nowline" hidden></div>
       <div class="pagewrap">
         <div class="pages" id="pages"></div>
         <div class="secview" id="secview" hidden></div>
         <div class="simview" id="simview" hidden></div>
         <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div></div>
-        <div class="nowline" id="nowline" hidden></div>
       </div>
      </div>
      <div class="screen" id="scr3">
@@ -1540,8 +1547,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=3dbd805eb7"></script>
-<script src="app.js?v=3dbd805eb7"></script>
+<script src="data/index.js?v=0cde7002b7"></script>
+<script src="app.js?v=0cde7002b7"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
