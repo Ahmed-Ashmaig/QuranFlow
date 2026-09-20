@@ -286,7 +286,11 @@ a.js:hover{border-color:var(--gold)}
 .enlines{display:none;position:relative;grid-template-rows:repeat(15,9.3cqi);gap:0;direction:ltr;pointer-events:none}
 .enlines .enb{pointer-events:auto}
 /* a section opened in full: it takes the whole page area, so the Arabic and the English never share a line */
-.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch}
+/* pan-y hands the browser the vertical scroll and keeps the horizontal gesture for us. With touch-action:auto a
+   real finger can be claimed by the scroller before a single touchmove reaches JS — which is why the swipe
+   worked under synthetic touches and not under a thumb. */
+.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y}
+.secview #svbody{touch-action:pan-y}
 .svbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:.35rem}
 .svbar > :first-child{justify-self:start}
 .svbar > :last-child{justify-self:end}
@@ -1606,8 +1610,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=4fb3e62563"></script>
-<script src="app.js?v=4fb3e62563"></script>
+<script src="data/index.js?v=ee8c9c9321"></script>
+<script src="app.js?v=ee8c9c9321"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
