@@ -387,6 +387,9 @@ a.js:hover{border-color:var(--gold)}
 .scoperow{display:flex;flex-direction:row-reverse;align-items:center;gap:.35rem;min-width:0}
 .scoperow .qsecs{flex:1;min-width:0}
 .eyechip{flex:none;display:inline-grid;place-items:center;width:2.2rem;height:2rem;padding:0;cursor:pointer;border:1.5px solid var(--ink);border-radius:999px;background:var(--sheet);color:var(--ink)}
+/* With a word on it the chip has to grow: the icon and the label sit on one line. */
+.eyechip.wide{width:auto;grid-auto-flow:column;align-items:center;gap:.3rem;padding:0 .7rem;white-space:nowrap}
+.eyechip.wide b{font:700 .78rem var(--ui)}
 .eyechip[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 .eyechip:focus-visible,.eyebtn:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .eyechip svg,.eyebtn svg{width:1.2rem;height:1.2rem;flex:none}
@@ -1439,8 +1442,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=785ade75e0"></script>
-<script src="app.js?v=785ade75e0"></script>
+<script src="data/index.js?v=8dca5bf04e"></script>
+<script src="app.js?v=8dca5bf04e"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
