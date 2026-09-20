@@ -165,6 +165,14 @@ h1.stitle .ar{font:400 .95em/1.2 var(--q);color:var(--green)}
 .juzrow .jarrow{flex:none;align-self:center;height:auto;display:grid;place-items:center;padding-inline:.5rem}
 .juzline-wrap{flex:1 1 auto;min-width:0;direction:rtl;overflow-x:auto;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
 .juzline{direction:rtl;display:flex;gap:6px;padding-block:2px;justify-content:safe center;min-width:100%}
+/* Cards are sized so a third one is always half in view when a juz holds more than two: seeing part of the next
+   card is what tells you the row scrolls. A juz with only a surah or two still centres, with nothing cut. */
+/* Two cards used to fill the row exactly, so the third sat just outside it and the row looked complete. Sized
+   to two and a half, the next card is always part-visible, which is what says it scrolls. */
+#sWhere #jline .js{flex:0 0 calc((100% - 12px) / 2.5);width:auto;min-width:0}
+/* A soft edge where the row runs on, so it reads as scrollable even when the cards happen to land flush. */
+.juzline-wrap{-webkit-mask-image:linear-gradient(to left,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);
+  mask-image:linear-gradient(to left,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
 .js{flex:none;min-width:5.6rem;display:grid;justify-items:center;align-content:start;gap:.05rem;padding:.5rem .3rem .45rem;border-radius:8px;background:var(--sheet);border:1px solid var(--line);border-top-width:4px;text-align:center;text-decoration:none;color:var(--ink)}
 .js .jn{font:700 .78rem/1.2 var(--ui);color:var(--muted);font-variant-numeric:tabular-nums}
 .js .jar{font:400 1.3rem/2.1 var(--q);margin-bottom:.15rem}
@@ -544,10 +552,14 @@ a.js:hover{border-color:var(--gold)}
 .anav-btns{display:grid;gap:.4rem}
 .anavrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.4rem}
 .anavrow:empty,.anavrow.off{display:none}
+.anav-btns:has(> .anavrow.off) > .anavrow:not(.off) .abtn{min-height:5.3rem}
 /* The label keeps one line and ellipsises if it must; the ayah it leads to sits underneath it. */
 /* NB: a bare .lbl elsewhere in this sheet is uppercase and muted; button labels must not inherit that. */
+/* width:100% matters: these buttons centre their items on the cross axis, so without it the label shrinks to
+   its own text and then ellipsises inside a button with room to spare. */
 .abtn>.blbl,.navbtns .here>.blbl{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:100%;font-size:.68rem;text-transform:none;letter-spacing:normal;color:inherit;font-weight:700}
+  width:100%;max-width:100%;font-size:.68rem;text-transform:none;letter-spacing:normal;color:inherit;font-weight:700}
+.abtn>small,.navbtns .here>small{width:100%;overflow:hidden;text-overflow:ellipsis}
 .abtn{font-size:.72rem}
 .abtn{cursor:pointer;min-height:2.75rem;padding:.3rem .25rem;border-radius:11px;border:2px solid transparent;
   font:700 .76rem/1.15 var(--ui);text-align:center;white-space:normal;overflow-wrap:anywhere}
@@ -931,7 +943,7 @@ details[open]>summary .more::before{content:"▾ Close"}
   /* With the section chips hidden and the eye moved up beside the tabs, this row holds nothing on a phone. */
   .stage.practice #scr2 .scoperow{display:none}
   .stage.practice #scr2 .pagebar{display:flex}
-  .stage.practice #scr2 .pagebar .pagerow{display:none}
+  /* kept in both modes: hiding it here moved the whole bar under the page when switching */
   .anav .anav-where{display:none}
   .anav.where-on .anav-where{display:block;justify-self:center;font-size:.86rem;line-height:1.15}
   .anav .abtn{min-height:2.45rem}
@@ -1218,6 +1230,12 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 .ctxhead h2{margin:0;font:700 1.02rem/1.2 var(--display);color:var(--ink)}
 .ctxbody{overflow-y:auto;padding:.7rem .9rem 1.1rem;display:grid;gap:.6rem;overscroll-behavior:contain}
 .ctxbody .sub{font-size:.82rem;color:var(--muted)}
+/* One block per section on the page, divided so it is clear where one ends and the next begins. */
+.ctxsec{display:grid;gap:.45rem;padding-block:.7rem}
+.ctxsec + .ctxsec{border-top:1px solid var(--line)}
+.ctxsec h3{margin:0;font:700 .95rem/1.3 var(--display);color:var(--ink);display:flex;gap:.45rem;align-items:baseline}
+.ctxsec h3 b{flex:none;font-size:.8rem;color:var(--sheet);background:var(--ink);border-radius:6px;padding:.05rem .4rem}
+.ctxsec h3 span{flex:none;margin-inline-start:auto;font:500 .72rem var(--ui);color:var(--muted)}
 .edgepeek.from-left{left:0;transform:translateX(-100%)}
 .edgepeek.from-right{right:0;transform:translateX(100%)}
 .edgepeek.settle{transition:transform .22s ease}
@@ -1568,8 +1586,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=68687382a4"></script>
-<script src="app.js?v=68687382a4"></script>
+<script src="data/index.js?v=0acdd91ac7"></script>
+<script src="app.js?v=0acdd91ac7"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
