@@ -88,8 +88,6 @@ p{margin:0}
 .homebtn:hover{filter:brightness(1.12)}
 /* on the home screen it marks where you are instead of being a button */
 .homebtn.here{background:none;color:var(--ink);border-color:var(--line);pointer-events:none}
-.homebtn.weakbtn{background:var(--sheet);color:var(--red);border-color:var(--red);gap:.35rem}
-.weakbtn i{font-style:normal;font-size:.72rem;line-height:1;background:var(--red);color:var(--sheet);border-radius:999px;padding:.12rem .38rem;margin-block:-.2rem}
 .homebtn.here svg{color:var(--green)}
 .crumb{min-width:0;font-size:.9rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .crumb b{color:var(--ink)}
@@ -408,16 +406,10 @@ a.js:hover{border-color:var(--gold)}
 .eyechip svg,.eyebtn svg{width:1.2rem;height:1.2rem;flex:none}
 .eyebtn{display:inline-flex;align-items:center;gap:.35rem}
 .qsec.on.here{box-shadow:inset 0 0 0 2px var(--ink),0 0 0 2px var(--gold)}
-.nowline{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:.45rem .6rem;font-size:.86rem;display:grid;gap:.25rem;cursor:pointer}
-.nowtxt{line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.nowline.open .nowtxt{-webkit-line-clamp:none}
-/* Only shown when the translation runs past the two lines on offer, so it never nags on a short ayah.
-   NB: "more" is already taken by the "Open each ayah" disclosure, hence the distinct name. */
+.nowline{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:.45rem .6rem;font-size:.86rem;display:grid;gap:.25rem}
+/* A long translation scrolls inside the card rather than hiding behind a disclosure. */
+.nowtxt{line-height:1.45;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;max-height:100%}
 .nowline{position:relative}
-.nowline.hasmore{padding-inline-end:1.5rem}
-.nowline.hasmore::after{content:"\2304";position:absolute;inset-inline-end:.5rem;top:.35rem;color:var(--muted);
-  font-size:.95rem;line-height:1;transition:transform .15s ease}
-.nowline.hasmore.open::after{transform:rotate(180deg)}
 .nowtxt.note{color:var(--green);font-weight:600}
 .nowrep{font-size:.68rem;font-weight:700;color:var(--rep);text-transform:uppercase;letter-spacing:.04em}
 .nowline .k{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex:none}
@@ -879,9 +871,8 @@ details[open]>summary .more::before{content:"▾ Close"}
   .anav.where-on .anav-where{display:block;justify-self:center;font-size:.86rem;line-height:1.15}
   .anav .abtn{min-height:2.45rem}
   #scr2 .nowline{flex:none;margin-top:0;height:2.55rem;box-sizing:border-box;padding:.2rem .55rem;display:flex;align-items:center;overflow:hidden}
-  #scr2 .nowline .nowtxt{-webkit-line-clamp:2;font-size:.78rem;line-height:1.28}
-  #scr2 .nowline.open{position:absolute;inset-inline:0;bottom:.3rem;z-index:9;height:auto;max-height:45%;overflow-y:auto;align-items:flex-start;box-shadow:0 -10px 30px rgba(0,0,0,.18)}
-  #scr2 .nowline.open .nowtxt{-webkit-line-clamp:none}
+  #scr2 .nowline .nowtxt{font-size:.78rem;line-height:1.28;max-height:100%;width:100%}
+  #scr2 .nowline{align-items:stretch}
   #scr2 .nowline .btn{padding:.3rem .9rem;font-size:.82rem}
   #scr2 .nowline.rows{height:auto;max-height:6.9rem;display:grid;align-items:start;align-content:start;gap:.2rem;overflow-y:auto;padding-block:.25rem}
   .stage.quiz #pbody .ptitle{font-size:1rem;line-height:1.25}
@@ -1324,7 +1315,6 @@ try {
 <div class="app" id="app">
   <nav class="topbar" aria-label="App">
     <a class="homebtn here" id="homebtn" href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>All surahs</a>
-    <a class="homebtn weakbtn" id="weakbtn" href="#weakspots" hidden>Weak spots</a>
     <div class="crumb" id="crumb"></div>
     <div class="feat" id="feat" hidden>
       <button type="button" class="featbtn" id="featBtn" aria-haspopup="true" aria-expanded="false" aria-controls="featMenu"><span id="featName">Learn</span><span class="caret" aria-hidden="true">▾</span></button>
@@ -1478,8 +1468,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=6db3ca0039"></script>
-<script src="app.js?v=6db3ca0039"></script>
+<script src="data/index.js?v=75b0955fa2"></script>
+<script src="app.js?v=75b0955fa2"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
