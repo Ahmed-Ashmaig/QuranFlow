@@ -377,7 +377,7 @@ a.js:hover{border-color:var(--gold)}
 .sva.found{box-shadow:0 0 0 2px var(--gold)}
 .tuckhandle{display:none}
 .sheadrow{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
-.juzchip{display:none;cursor:pointer;flex:none;font:700 .72rem var(--ui);color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:11px;padding:.2rem .6rem;white-space:nowrap}
+.juzchip{display:none;cursor:pointer;flex:none;font:700 .72rem var(--ui);color:var(--ink);background:var(--sheet);border:1.5px solid var(--ink);border-radius:11px;padding:.26rem .6rem;white-space:nowrap}
 .juzchip[aria-expanded="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
 .qsec.here{box-shadow:inset 0 0 0 2px var(--gold)}
 .qsec.out{opacity:.35}
@@ -440,19 +440,19 @@ a.js:hover{border-color:var(--gold)}
 .stage.test .w.sel:not(.shown){color:transparent;background:var(--hide)}
 /* Quiz keeps the section colours on the page, so the section boundaries stay visible while you answer */
 .stage.weakonly .w.s{background:transparent!important}
-/* Learn draws the section map as a rule under the words instead of a wash over them: the fill sat behind every
-   letter and made the Arabic hard to read, while a coloured underline says exactly as much about where one
-   section ends and the next begins. */
-.stage.learn #pages .w.s{background:transparent!important}
-.stage.learn #pages .w.s1{box-shadow:inset 0 -.11em 0 var(--s1e)} .stage.learn #pages .w.s2{box-shadow:inset 0 -.11em 0 var(--s2e)}
-.stage.learn #pages .w.s3{box-shadow:inset 0 -.11em 0 var(--s3e)} .stage.learn #pages .w.s4{box-shadow:inset 0 -.11em 0 var(--s4e)}
-.stage.learn #pages .w.s5{box-shadow:inset 0 -.11em 0 var(--s5e)} .stage.learn #pages .w.s6{box-shadow:inset 0 -.11em 0 var(--s6e)}
-.stage.learn #pages .w.s7{box-shadow:inset 0 -.11em 0 var(--s7e)} .stage.learn #pages .w.s8{box-shadow:inset 0 -.11em 0 var(--s8e)}
-/* the section you are reading keeps the heavier rule it always had */
-.stage.learn #pages .w.s1.curayah{box-shadow:inset 0 -.26em 0 var(--s1e)} .stage.learn #pages .w.s2.curayah{box-shadow:inset 0 -.26em 0 var(--s2e)}
-.stage.learn #pages .w.s3.curayah{box-shadow:inset 0 -.26em 0 var(--s3e)} .stage.learn #pages .w.s4.curayah{box-shadow:inset 0 -.26em 0 var(--s4e)}
-.stage.learn #pages .w.s5.curayah{box-shadow:inset 0 -.26em 0 var(--s5e)} .stage.learn #pages .w.s6.curayah{box-shadow:inset 0 -.26em 0 var(--s6e)}
-.stage.learn #pages .w.s7.curayah{box-shadow:inset 0 -.26em 0 var(--s7e)} .stage.learn #pages .w.s8.curayah{box-shadow:inset 0 -.26em 0 var(--s8e)}
+/* Nothing is drawn over or under the words in Learn: the Arabic reads exactly as it does in Practice. The
+   section map moves to a colour bar down the edge of the page, one segment per line, so you can still see at a
+   glance where one section gives way to the next. */
+.stage.learn #pages .w.s{background:transparent!important;box-shadow:none}
+.stage.learn #pages .w.s.curayah{box-shadow:inset 0 -.1em 0 var(--gold)!important}
+.lnb1{--lnc:var(--s1e)} .lnb2{--lnc:var(--s2e)} .lnb3{--lnc:var(--s3e)} .lnb4{--lnc:var(--s4e)}
+.lnb5{--lnc:var(--s5e)} .lnb6{--lnc:var(--s6e)} .lnb7{--lnc:var(--s7e)} .lnb8{--lnc:var(--s8e)}
+.stage.learn #pages .ln{position:relative}
+/* One continuous rule down the right-hand edge, in the page's own padding so the text keeps every pixel of its
+   width. The segments meet edge to edge, so a section reads as an unbroken line that simply changes colour
+   where the next one starts; a line with no section of this surah on it leaves a real gap. */
+.stage.learn #pages .ln::after{content:"";position:absolute;inset-inline-start:-.26rem;top:0;bottom:0;
+  width:.19rem;background:var(--lnc,transparent)}
 /* Practice is not about where the sections are, so the colour bands come off and the page reads as the
    muṣḥaf does. The single current-ayah underline stays — that is position, not section colouring. */
 .stage.practice #pages .w.s:not(.veil):not(.sel){background:transparent}
@@ -1489,8 +1489,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=9174e71fd0"></script>
-<script src="app.js?v=9174e71fd0"></script>
+<script src="data/index.js?v=0e78f7aadf"></script>
+<script src="app.js?v=0e78f7aadf"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
