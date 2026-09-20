@@ -160,7 +160,9 @@ h1.stitle .ar{font:400 .95em/1.2 var(--q);color:var(--green)}
    right. A juz with only a surah or two centres rather than hugging one edge — "safe" so a row too wide to
    fit still starts at its own beginning instead of being clipped. */
 .juzrow{display:flex;align-items:stretch;gap:.4rem;min-width:0}
-.juzrow .jarrow{flex:none;align-self:stretch;display:grid;place-items:center;padding-inline:.55rem}
+/* Sized by its own content, not stretched to the strip: a two-word juz name needs two lines and was being
+   squeezed into one track and clipped. */
+.juzrow .jarrow{flex:none;align-self:center;height:auto;display:grid;place-items:center;padding-inline:.5rem}
 .juzline-wrap{flex:1 1 auto;min-width:0;direction:rtl;overflow-x:auto;padding-bottom:.2rem;-webkit-overflow-scrolling:touch}
 .juzline{direction:rtl;display:flex;gap:6px;padding-block:2px;justify-content:safe center;min-width:100%}
 .js{flex:none;min-width:5.6rem;display:grid;justify-items:center;align-content:start;gap:.05rem;padding:.5rem .3rem .45rem;border-radius:8px;background:var(--sheet);border:1px solid var(--line);border-top-width:4px;text-align:center;text-decoration:none;color:var(--ink)}
@@ -400,7 +402,14 @@ a.js:hover{border-color:var(--gold)}
 .jarrow{all:unset;box-sizing:border-box;cursor:pointer;flex:none;font:700 .95rem/1 var(--ui);color:var(--ink);
   background:var(--sheet);border:1.5px solid var(--ink);border-radius:11px;padding:.1rem .45rem;text-align:center;
   display:grid;place-items:center;gap:.1rem}
-.jarrow b{font:700 .58rem/1 var(--ui);white-space:nowrap}
+.jarrow{padding:.3rem .4rem;min-width:5.1rem;max-width:6.4rem}
+.jarrow b{font:700 .62rem/1.1 var(--ui);white-space:nowrap}
+.jav{font-size:1rem;line-height:1}
+/* The Quran face carries tall marks that reach into the line above, so this keeps its own room. */
+.jan{font-family:var(--q);font-size:.74rem;line-height:1.5;color:var(--ink);max-width:100%;
+  white-space:normal;text-wrap:balance;margin-block:.22rem .1rem}
+.jap{font:500 .54rem/1.1 var(--ui);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.jarrow:disabled .jan,.jarrow:disabled .jap{color:var(--muted)}
 .jname{font-family:var(--q);font-size:1.05em;color:var(--ink);margin-inline-start:.35em}
 /* the surah’s theme, under its juz strip */
 .jtheme{display:grid;gap:.45rem;padding-block:.5rem;border-top:1px solid var(--line);max-height:34vh;overflow-y:auto}
@@ -778,7 +787,7 @@ body.tourpaused .splash,body.tourpaused .splash *{animation-play-state:paused!im
    in order (swipe; right to left), then the surah's place in the whole muṣḥaf */
 .where{display:grid;gap:.4rem;min-width:0}
 .where .jhead,.where .qpos{padding-inline:.15rem}
-.where .jhead{justify-content:flex-start;gap:.2rem .5rem}
+.where .jhead{justify-content:center;align-items:baseline;text-align:center;gap:.2rem .5rem}
 .where .qpos{display:grid;gap:.1rem}
 .whybody{display:grid;gap:.5rem}
 .whybody p{max-width:64ch;line-height:1.6}
@@ -1180,9 +1189,10 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
    Practice, so switching does not move it. */
 .striprow{display:flex;align-items:center;gap:.4rem;min-width:0}
 .striprow > .strip,.striprow > .ltabs{flex:1 1 auto;min-width:0}
-/* Pinned to the top of the row, not its middle: Learn's row is taller, and a centred eye would sit lower there
-   and appear to jump when the mode changes. */
-.striprow > .eyechip{flex:none;align-self:flex-start;margin-block-start:.32rem}
+/* It stands the full height of the row it belongs to, so its top edge is in the same place in both modes and it
+   reads as part of that row rather than a chip floating beside it. */
+.striprow > .eyechip{flex:none;align-self:stretch;height:auto;width:2.9rem}
+.striprow > .eyechip svg{width:1.5rem;height:1.5rem}
 /* A phone-width rule pins the strip to flex:none, which would shove the eye off the screen. */
 #scr2 .striprow > .strip{flex:1 1 auto;min-width:0}
 /* Practice spends the space under its tabs on the translation; Learn spends it on a taller strip, so the page
@@ -1558,8 +1568,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=69a2d8a0dd"></script>
-<script src="app.js?v=69a2d8a0dd"></script>
+<script src="data/index.js?v=68687382a4"></script>
+<script src="app.js?v=68687382a4"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
