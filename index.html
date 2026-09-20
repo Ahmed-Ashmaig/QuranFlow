@@ -228,7 +228,7 @@ a.js:hover{border-color:var(--gold)}
 .w.o{opacity:.3;cursor:default}
 .w.s.dim{opacity:.3;background:transparent}
 .w.focus{background:var(--focusw)!important;opacity:1!important;box-shadow:0 0 0 1px var(--gold)}
-.e{display:inline-flex;align-items:center;justify-content:center;min-width:1.35em;height:1.35em;border:1px solid var(--gold);border-radius:50%;font-size:.62em;line-height:1;color:var(--gold);padding-inline:.15em}
+.e{display:inline-flex;align-items:center;justify-content:center;min-width:1.35em;height:1.35em;border:1px solid var(--gold);border-radius:50%;font-size:.62em;line-height:1;color:var(--gold);padding-inline:.15em;box-sizing:border-box;padding-block-end:.26em}
 .name{border:1px solid var(--gold);border-radius:4px;padding-inline:1.2em;font-size:1.05em;color:var(--gold);line-height:1.6}
 /* the English page: section blocks laid on the same fifteen lines the Arabic uses */
 .layers{display:grid}
@@ -426,9 +426,13 @@ a.js:hover{border-color:var(--gold)}
 .langtog button:focus-visible{outline:2px solid var(--green);outline-offset:1px}
 .pno{text-align:center;font:500 .8rem/1 var(--ui);color:var(--muted);padding-top:.35rem;direction:ltr}
 .stage.test .w.sel:not(.shown){color:transparent;background:var(--hide)}
-.stage.test .w.sel:not(.shown) .e{border-color:transparent;color:transparent}
 /* Quiz keeps the section colours on the page, so the section boundaries stay visible while you answer */
 .stage.weakonly .w.s{background:transparent!important}
+/* Practice is not about where the sections are, so the colour bands come off and the page reads as the
+   muṣḥaf does. The single current-ayah underline stays — that is position, not section colouring. */
+.stage.practice #pages .w.s:not(.veil):not(.sel){background:transparent}
+.stage.practice #pages .w.s.shown{background:transparent}
+.stage.practice #pages .w.s.curayah{box-shadow:inset 0 -.1em 0 var(--gold)!important}
 .w.stuck{color:var(--red);text-decoration:underline wavy var(--red);text-decoration-thickness:1px;text-underline-offset:.4em}
 .w.stuck .e{border-color:var(--red);color:var(--red)}
 .stage.test .w.sel.stuck:not(.shown){background:var(--redsoft);color:transparent;text-decoration:none}
@@ -531,8 +535,6 @@ a.js:hover{border-color:var(--gold)}
 /* a weak ayah hidden on the page while it is being recited */
 .w.veil{color:transparent!important;background:var(--hide)!important;box-shadow:none!important;text-decoration:none!important}
 #stage #pages .w.s.veil{color:transparent!important;background:var(--hide)!important;box-shadow:none!important;text-decoration:none!important}
-#stage #pages .w.s.veil .e{color:transparent!important;border-color:transparent!important}
-.w.veil .e{border-color:transparent;color:transparent}
 .brandlbl{color:var(--green)}
 /* "add to home screen" tip on the home screen (installed app only, never inside the claude.ai copy) */
 .installtip{display:grid;gap:.5rem;padding:.75rem .9rem;border:1px solid var(--green);border-radius:10px;background:var(--sheet);margin-top:.4rem}
@@ -1079,6 +1081,8 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 /* on the page: a saved ayah's number turns gold; the reading bookmark's gets a green ring */
 .w.saved .e{background:var(--gold);border-color:var(--gold);color:var(--sheet)}
 .w.bmark .e{box-shadow:0 0 0 1.5px var(--sheet),0 0 0 3px var(--green)}
+/* Covering an ayah hides its words, never its number: the marker is how you keep your place and count
+   what is still ahead of you. It keeps the normal gold, or red on a weak spot. */
 .w.veil .e,.stage.test .w.sel:not(.shown) .e{background:transparent!important;box-shadow:none!important}
 .savedpill,.bmpill{display:inline-flex;align-items:center;gap:.15rem;font-size:.72rem;font-weight:700}
 .savedpill{color:var(--gold)} .bmpill{color:var(--green)}
@@ -1411,7 +1415,7 @@ try {
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
         <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
-        <button type="button" class="abtn stuck" id="a-stuck">I’m stuck</button>
+        <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
         <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
         <span class="abtn here" id="a-here" aria-current="page" hidden></span>
         <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
@@ -1442,8 +1446,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=8dca5bf04e"></script>
-<script src="app.js?v=8dca5bf04e"></script>
+<script src="data/index.js?v=e147298d48"></script>
+<script src="app.js?v=e147298d48"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
