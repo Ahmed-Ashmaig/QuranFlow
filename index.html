@@ -578,7 +578,7 @@ a.js:hover{border-color:var(--gold)}
 .btn.stuckbtn{background:var(--red);border-color:var(--red);color:var(--sheet)}
 .btn:disabled{opacity:.4;cursor:default}
 /* Learn: previous / next ayah pinned to the bottom of the screen, whatever the scroll position */
-.anav{position:fixed;z-index:7;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:min(40rem,calc(100% - 24px));display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.5rem;padding:.5rem;background:var(--sheet);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
+.anav{position:fixed;z-index:7;left:50%;transform:translateX(-50%);bottom:calc(4px + env(safe-area-inset-bottom));width:min(40rem,calc(100% - 24px));display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.5rem;padding:.5rem;background:var(--sheet);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
 .anav .anav-eyechip{grid-column:auto}
 .anav .btn{white-space:nowrap}
 /* the step bar: a counter over four equal buttons, each a different colour so a thumb finds the right one */
@@ -990,8 +990,11 @@ details[open]>summary .more::before{content:"▾ Close"}
   .anav .anav-where{display:none}
   .anav.where-on .anav-where{display:block;justify-self:center;font-size:.86rem;line-height:1.15}
   .anav .abtn{min-height:2.45rem}
-  #scr2 .nowline{flex:none;margin-top:0;height:2.2rem;box-sizing:border-box;padding:.15rem .55rem;display:flex;align-items:center;overflow:hidden}
-  #scr2 .nowline .nowtxt{font-size:.78rem;line-height:1.28;max-height:100%;width:100%}
+  /* The line above the muṣḥaf carries the ayah's translation, and at one line most of it was cut off and had
+     to be scrolled. Two lines fit the great majority of them whole. The height it costs comes back out of
+     the bar at the bottom, which is dropped nearer the edge below, so the muṣḥaf keeps what it had. */
+  #scr2 .nowline{flex:none;margin-top:0;min-height:2.2rem;height:auto;max-height:3.5rem;box-sizing:border-box;padding:.15rem .55rem;display:flex;align-items:center;overflow:hidden}
+  #scr2 .nowline .nowtxt{font-size:.84rem;line-height:1.3;max-height:100%;width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   #scr2 .nowline{align-items:stretch}
   #scr2 .nowline .btn{padding:.3rem .9rem;font-size:.82rem}
   #scr2 .nowline.rows{height:auto;max-height:6.9rem;display:grid;align-items:start;align-content:start;gap:.2rem;overflow-y:auto;padding-block:.25rem}
@@ -1004,7 +1007,7 @@ details[open]>summary .more::before{content:"▾ Close"}
   .lbody.sec .strio{flex:1;min-height:0;display:flex;flex-direction:column;gap:.35rem}
   .lbody.sec .strio > .nbc{flex:none;padding:.4rem .6rem;gap:.1rem}
   .lbody.sec .strio .here.secmain{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin}
-  /* a slimmer bottom bar */
+  /* a slimmer bottom bar, sitting nearer the edge so the space it frees goes to the translation line */
   .anav{padding:.3rem;gap:.3rem;row-gap:.15rem}
   .anav .btn{padding:.4rem .55rem;font-size:.86rem}
   .anav-mid{gap:.35rem}
@@ -1615,14 +1618,18 @@ try {
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
+        <!-- Thumb order, not mushaf order: a phone is held in the right hand, so the button pressed over and
+             over - "Peek at next word", "Reveal next" - sits on the right where the thumb already rests, and
+             the chevrons follow it outward. The mushaf's own right-to-left order still governs the pages
+             and the surah buttons in the top bar. -->
         <div class="anavrow" id="a-rowdo">
-          <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
           <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
+          <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
         </div>
         <div class="anavrow" id="a-rowgo">
-          <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
+          <button type="button" class="abtn prev" id="a-prev">‹ Previous ayah</button>
           <span class="abtn here" id="a-here" aria-current="page" hidden></span>
-          <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
+          <button type="button" class="abtn next" id="a-next">Next ayah ›</button>
         </div>
       </div>
       <button type="button" class="eyechip anav-eyechip" id="a-eyeall" aria-pressed="false"></button>
@@ -1652,8 +1659,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=90297991e6"></script>
-<script src="app.js?v=90297991e6"></script>
+<script src="data/index.js?v=a4ca5c4547"></script>
+<script src="app.js?v=a4ca5c4547"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
