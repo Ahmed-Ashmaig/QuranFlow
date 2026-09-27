@@ -440,7 +440,6 @@ a.js:hover{border-color:var(--gold)}
 .sayah .sar{font:400 1.2rem/1.9 var(--q);direction:rtl;text-align:right;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .sayah .sen{font-size:.84rem;line-height:1.35;color:var(--muted);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .sva.found{box-shadow:0 0 0 2px var(--gold)}
-.tuckhandle{display:none}
 .sheadrow{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
 .jarrow{all:unset;box-sizing:border-box;cursor:pointer;flex:none;font:700 .95rem/1 var(--ui);color:var(--ink);
   background:var(--sheet);border:1.5px solid var(--ink);border-radius:11px;padding:.1rem .45rem;text-align:center;
@@ -580,10 +579,15 @@ a.js:hover{border-color:var(--gold)}
 .btn:disabled{opacity:.4;cursor:default}
 /* Learn: previous / next ayah pinned to the bottom of the screen, whatever the scroll position */
 .anav{position:fixed;z-index:7;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:min(40rem,calc(100% - 24px));display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.5rem;padding:.5rem;background:var(--sheet);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
+.anav .anav-eyechip{grid-column:auto}
 .anav .btn{white-space:nowrap}
 /* the step bar: a counter over four equal buttons, each a different colour so a thumb finds the right one */
-.anav{grid-template-columns:minmax(0,1fr);row-gap:.3rem}
-.anav .anav-where{justify-self:center}
+/* Phones: the bar stacks, with a narrow column on the right held for the eye so it sits beside the buttons
+   rather than above or below them, and at the same size in Learn and in Practice. */
+.anav{grid-template-columns:minmax(0,1fr) auto;row-gap:.3rem;column-gap:.4rem}
+.anav .anav-where{grid-column:1;justify-self:center}
+.anav .anav-btns{grid-column:1}
+.anav .anav-eyechip{grid-column:2;grid-row:1 / -1}
 .anav-btns{display:grid;gap:.4rem}
 .anavrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.4rem}
 .anavrow:empty,.anavrow.off{display:none}
@@ -895,6 +899,11 @@ details[open]>summary .more::before{content:"▾ Close"}
 @media (max-width:1099px){
   body.in-surah{padding-bottom:0}
   body.in-surah #surah{padding-bottom:0}
+  /* fitPage sizes the muṣḥaf to min(the column's width, what the height allows). On a phone taller than about
+     700px the width is what binds — a 390px screen gave a 358px page purely because the body keeps a 16px
+     gutter each side — so on the surah screens the gutter comes off and the page takes the width back. The safe
+     area still gets its inset on a notched phone. */
+  body.in-surah{padding-inline:max(4px,env(safe-area-inset-left),env(safe-area-inset-right))}
   /* the scroller ends where the bar pinned to the bottom begins (--bar is measured live), so no screen is covered */
   .stage{display:block;height:calc(100vh - var(--topbar,5.6rem) - .3rem - var(--bar,0px));height:calc(100dvh - var(--topbar,5.6rem) - .3rem - var(--bar,0px));overflow:hidden;overscroll-behavior:contain;overflow-anchor:none;scrollbar-width:none}
   .stage::-webkit-scrollbar{display:none}
@@ -958,12 +967,9 @@ details[open]>summary .more::before{content:"▾ Close"}
   .ltabs button{font-size:.8rem;padding:.42rem .3rem}
   .ltabs button i{min-width:1.1em;font-size:.68rem;margin-inline-start:.15rem}
   #scr2 .secview,#scr2 .simview{flex:1;min-height:0}
-  /* Practice tucks the app bar and the mode tabs away so the muṣḥaf gets their height; the handle brings them back */
-  body.tucked .topbar,body.tucked #pbar .ltabs{display:none}
-  body.tucked .app{padding-top:env(safe-area-inset-top)}
-  body.tucked .tuckhandle{display:flex;flex:none;align-self:center;align-items:center;gap:.35rem;max-width:100%;cursor:pointer;
-    font:600 .7rem/1.2 var(--ui);color:var(--muted);background:var(--sheet);border:1px solid var(--line);border-radius:11px;padding:.12rem .7rem;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  body.tucked .tuckhandle:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+  /* The app bar and the mode tabs stay put in both modes, on every screen size. Practice used to tuck them away
+     behind a handle to buy the muṣḥaf their height; being able to reach Learn/Practice and the next surah at any
+     moment is worth more than the text size that bought. */
   /* Practice gives the muṣḥaf every pixel it can: a slim mode bar, a status line of fixed height (so the page never
      resizes between ayat), no page bar, and a bottom bar of buttons only */
   #scr2 .pbar{flex:none;gap:.2rem}
@@ -984,7 +990,7 @@ details[open]>summary .more::before{content:"▾ Close"}
   .anav .anav-where{display:none}
   .anav.where-on .anav-where{display:block;justify-self:center;font-size:.86rem;line-height:1.15}
   .anav .abtn{min-height:2.45rem}
-  #scr2 .nowline{flex:none;margin-top:0;height:2.55rem;box-sizing:border-box;padding:.2rem .55rem;display:flex;align-items:center;overflow:hidden}
+  #scr2 .nowline{flex:none;margin-top:0;height:2.2rem;box-sizing:border-box;padding:.15rem .55rem;display:flex;align-items:center;overflow:hidden}
   #scr2 .nowline .nowtxt{font-size:.78rem;line-height:1.28;max-height:100%;width:100%}
   #scr2 .nowline{align-items:stretch}
   #scr2 .nowline .btn{padding:.3rem .9rem;font-size:.82rem}
@@ -1074,6 +1080,27 @@ body.nosel,body.nosel *{-webkit-user-select:none!important;user-select:none!impo
   body.in-surah .navbtns a{text-align:center}
 }
 @media (max-width:359px){body.in-surah .homebtn svg{display:none}}
+/* Short phones: the app bar and the mode tabs now stay up in Practice instead of tucking away, so on a screen
+   with no height to spare they shrink rather than disappear. Every control and every label stays — only the
+   padding, the type scale and the row gap come down, which buys back most of the muṣḥaf height the tuck used to.
+   The tuck used to engage below 840px; the cut is a little higher than that because the muṣḥaf page has a maximum
+   size, and a compact bar is what lets an 844px screen reach it — measured at 390px wide, the cost to the Arabic
+   against a hidden bar falls from 31% to 24% at 664px, from 19% to 0% at 844px, and was already 0% at 932px. */
+@media (max-width:1099px) and (max-height:899px){
+  body.in-surah .topbar{padding-block:.28rem;row-gap:.22rem;column-gap:.3rem}
+  body.in-surah .homebtn{padding:.28rem .5rem;font-size:.82rem;gap:.3rem}
+  body.in-surah .modetog{padding:1px}
+  body.in-surah .modetog button{padding:.26rem .58rem;font-size:.78rem}
+  body.in-surah .navbtns{gap:.25rem}
+  body.in-surah .navbtns a,body.in-surah .navbtns .here{padding:.1rem .45rem;border-width:1.5px}
+  body.in-surah .navbtns .here{padding-block:.14rem}
+  body.in-surah #navbtns .here>.blbl{font-size:.82rem}
+  body.in-surah #navbtns a>.blbl{font-size:.6rem}
+  body.in-surah .navbtns .pgs{font:600 .52rem/1.15 var(--ui)}
+  body.in-surah #navbtns .here .pgs{font-size:.55rem}
+  /* Practice's own bar of mode tabs, the other thing the tuck used to take away */
+  body.in-surah #scr2 .pbar .ltabs button{padding:.2rem .22rem;font-size:.7rem}
+}
 /* ---- similars tab ---- */
 /* a look-alike opened full-screen: the same shape as a section opened from the page */
 .simview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0}
@@ -1238,24 +1265,26 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
    Practice, so switching does not move it. */
 .striprow{display:flex;align-items:center;gap:.4rem;min-width:0}
 .striprow > .strip,.striprow > .ltabs{flex:1 1 auto;min-width:0}
-/* It stands the full height of the row it belongs to, so its top edge is in the same place in both modes and it
-   reads as part of that row rather than a chip floating beside it. */
-.striprow > .eyechip{flex:none;align-self:stretch;height:auto;width:2.9rem}
-.striprow > .eyechip svg{width:1.5rem;height:1.5rem}
+/* The eye lives in the bar at the bottom now, beside the buttons your thumb is already on, so neither strip row
+   carries one. It used to stretch to its row's height, which made it a tall slab in Learn (46x99) and a small
+   chip in Practice (46x53) — two different-looking controls for the same job. */
+.anav-eyechip{grid-column:2;align-self:center;width:2.75rem;height:2.4rem}
+.anav-eyechip svg{width:1.5rem;height:1.5rem}
 /* A phone-width rule pins the strip to flex:none, which would shove the eye off the screen. */
 #scr2 .striprow > .strip{flex:1 1 auto;min-width:0}
-/* Practice spends the space under its tabs on the translation; Learn spends it on a taller strip, so the page
-   starts at the same y in both. The strip is tall enough to show a section title whole rather than clipping it. */
-#scr2 #pbar .striprow{min-height:3.3rem}
-#scr2 #stripRow{min-height:6.2rem;align-items:stretch}
+/* Both rows are kept as short as the muṣḥaf can afford. Learn's strip used to stand 6.2rem tall so a section
+   title could run to three lines; on a phone that is 99px of the 639px the surah screen has, spent above the
+   Arabic. Two lines is enough for a 5-9 word title at this width, and the page keeps the difference. */
+#scr2 #pbar .striprow{min-height:2.5rem}
+#scr2 #stripRow{min-height:4.3rem;align-items:stretch}
 #scr2 #pbar .striprow .blk{padding-block:.5rem .45rem}
 /* The strip fills the row instead of floating in the middle of it, and the title uses the height it frees:
    it wraps to as many as three lines rather than being held to one and cut. */
 #scr2 #stripRow .strip{align-self:stretch;grid-auto-columns:minmax(10rem,13rem)}
 #scr2 #stripRow .blk{align-content:center;padding-block:.45rem;gap:.2rem}
 #scr2 #stripRow .blk b{font-size:1.02rem}
-#scr2 #stripRow .blk em{white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
-  font-size:.86rem;line-height:1.3}
+#scr2 #stripRow .blk em{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  font-size:.86rem;line-height:1.25}
 /* Theme and context, raised from the chip that names where you are. Same in Learn and Practice, so the button
    behaves the same wherever it is pressed. */
 .ctxsheet{position:fixed;z-index:12;inset-inline:0;bottom:0;max-height:76vh;display:grid;
@@ -1553,14 +1582,12 @@ try {
         <div class="qpos"><div class="quran-bar" id="qbar" aria-hidden="true"></div>
           <div class="ends"><span>Page 604</span><span id="posTxt"></span><span>Page 1</span></div></div>
       </div>
-      <button type="button" class="tuckhandle" id="tuckHandle" aria-label="Show the surah bar and practice modes"></button>
       <div class="pbar" id="pbar" hidden></div>
       <div class="bar" id="sBar">
         <div class="hint" id="hint"></div>
       </div>
       <div class="striprow" id="stripRow">
         <div class="strip" id="strip" role="group" aria-label="Sections" title="Hold any section for its ayah-by-ayah translations"></div>
-        <button type="button" class="eyechip" id="allAr" hidden aria-pressed="false"></button>
       </div>
       <div class="nowline" id="nowline" hidden></div>
       <div class="pagewrap">
@@ -1598,6 +1625,7 @@ try {
           <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
         </div>
       </div>
+      <button type="button" class="eyechip anav-eyechip" id="a-eyeall" aria-pressed="false"></button>
     </nav>
   </section>
 </div>
@@ -1624,8 +1652,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=a445abe8d6"></script>
-<script src="app.js?v=a445abe8d6"></script>
+<script src="data/index.js?v=0bdf65e9af"></script>
+<script src="app.js?v=0bdf65e9af"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
