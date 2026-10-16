@@ -1532,12 +1532,18 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
   <button type="button" class="splashskip" id="splashSkip">Skip intro <span aria-hidden="true">›</span></button>
 </div>
 <script>
-// The opening animation plays every time QuranFlow is opened: not on the one automatic reload when an update takes
-// over, and inside a same-origin frame (the test pages) only once per session.
+// The opening animation plays once per device, on the first launch only: anyone who has opened the app before goes
+// straight to All surahs rather than being asked to skip the same intro every time. It is also skipped on the one
+// automatic reload when an update takes over, and inside a same-origin frame (the test pages) once per session.
+// This runs before the app script so a returning visitor never sees a frame of it. The Demo button on All surahs
+// replays the opening for anyone who wants it back.
 try {
   var back = sessionStorage.getItem("qf-reloaded");
   sessionStorage.removeItem("qf-reloaded");
-  if (back || (window.frameElement && sessionStorage.getItem("qf-splash"))) document.getElementById("splash").hidden = true;
+  var seenIntro = null;
+  // Its own try: a private window can throw here, and that must not stop the checks above from being honoured.
+  try { seenIntro = localStorage.getItem("qf-intro-v1"); } catch (e) {}
+  if (back || seenIntro || (window.frameElement && sessionStorage.getItem("qf-splash"))) document.getElementById("splash").hidden = true;
 } catch (e) {}
 </script>
 <div class="flip" id="flip" aria-hidden="true" hidden></div>
@@ -1696,8 +1702,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=9503df977c"></script>
-<script src="app.js?v=9503df977c"></script>
+<script src="data/index.js?v=b93c43c1c2"></script>
+<script src="app.js?v=b93c43c1c2"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
