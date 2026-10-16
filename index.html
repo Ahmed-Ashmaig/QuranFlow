@@ -253,9 +253,23 @@ a.js:hover{border-color:var(--gold)}
 .pips button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .pagetxt{font-size:.8rem;color:var(--muted);text-align:center}
 .pages{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;direction:rtl;display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:.8rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.4rem;-webkit-overflow-scrolling:touch}
-.page{direction:rtl;background:var(--sheet);border:1px solid var(--line);padding:.9rem .9rem .5rem;container-type:inline-size;scroll-snap-align:center;justify-self:center;width:100%;max-width:30rem}
-.ln{display:flex;justify-content:space-between;align-items:center;white-space:nowrap;font:400 4.3cqi/2.15 var(--q);min-height:9.3cqi}
-.ln.center{justify-content:center}
+.page{direction:rtl;background:var(--sheet);border:1px solid var(--line);padding:.9rem .9rem .5rem;container-type:inline-size;scroll-snap-align:center;justify-self:center;width:100%;max-width:30rem;
+  /* The whole page geometry is these two numbers, and they live here only. The .ln rule, the English overlay's
+     fifteen grid rows and fitPage all read them, so they can no longer drift apart — they used to be three
+     separate literals (4.3cqi, 9.3cqi, 1.395) and a mismatch misaligns every English card over the Arabic with
+     no error anywhere. --ar 5.4cqi is what quranwbw ships and sits just under the 5.71cqi at which an Amiri
+     Quran line of the Madani muṣḥaf exactly fills its page width. --lnh is a hair over 5.4 × the 2.15
+     line-height, so min-height always wins and a row is exactly --lnh tall — which is what lets the overlay
+     grid match it. Fifteen rows of 11.7cqi make a page 1.76× as tall as it is wide: the muṣḥaf's own
+     proportion, and the reason the page has to scroll rather than shrink. */
+  --ar:5.4cqi;--lnh:11.7cqi}
+/* A line is flush on both edges, the way it is printed: space-between, with the slack now small enough — the
+   font is near the width a line can carry — that the word gaps read as word gaps instead of as a third of the
+   line thrown away. gap is the floor under them, so two words can never close up on a line that is centred.
+   fitLines() measures every line and rescues the two cases this rule cannot: one too wide to fit is squeezed
+   from the right margin with scaleX, one far too short is centred. */
+.ln{display:flex;justify-content:space-between;align-items:center;white-space:nowrap;gap:.08em;font:400 var(--ar)/2.15 var(--q);min-height:var(--lnh);transform-origin:right center}
+.ln.center,.ln.short{justify-content:center}
 .w{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;padding-inline:.08em;border-radius:3px;cursor:pointer;transition:opacity .2s}   /* no colour fades: a step restyles hundreds of words, and a reveal should be instant */
 .w.s1{background:var(--s1)} .w.s2{background:var(--s2)} .w.s3{background:var(--s3)} .w.s4{background:var(--s4)}
 .w.s5{background:var(--s5)} .w.s6{background:var(--s6)} .w.s7{background:var(--s7)} .w.s8{background:var(--s8)}
@@ -278,12 +292,16 @@ a.js:hover{border-color:var(--gold)}
 .name::before{inset-inline-start:.8em}
 .name::after{inset-inline-end:.8em}
 /* the English page: section blocks laid on the same fifteen lines the Arabic uses */
-.layers{display:grid}
-.layers > *{grid-area:1/1}
+/* The two layers share one grid cell. The column is pinned to the page's own width and the layers are told they
+   may be narrower than their content, because the Arabic lines are nowrap: left to itself a line too wide for
+   the page would STRETCH its layer — and the page's scrollable width with it — instead of overflowing it, which
+   hands fitLines a box wider than the page and so leaves the line unsqueezed and the page scrolling sideways. */
+.layers{display:grid;grid-template-columns:minmax(0,1fr)}
+.layers > *{grid-area:1/1;min-width:0}
 /* The English layer sits over the Arabic in the same grid cell, so the layer itself must never catch a finger —
    only its blocks do, and only when they are showing. Otherwise every tap and hold on an Arabic word lands on the
    layer instead of the word. */
-.enlines{display:none;position:relative;grid-template-rows:repeat(15,9.3cqi);gap:0;direction:ltr;pointer-events:none}
+.enlines{display:none;position:relative;grid-template-rows:repeat(15,var(--lnh));gap:0;direction:ltr;pointer-events:none}
 .enlines .enb{pointer-events:auto}
 /* a section opened in full: it takes the whole page area, so the Arabic and the English never share a line */
 /* pan-y hands the browser the vertical scroll and keeps the horizontal gesture for us. With touch-action:auto a
@@ -349,7 +367,7 @@ a.js:hover{border-color:var(--gold)}
 /* Arabic marks reach above and below their own line, so a card that stops exactly at its grid rows lets kasras
    and fathas show past its edge. Each card bleeds a few pixels and takes that back as padding: the text does not
    move, neighbours simply overlap by a hair, and nothing peeks out at the top or bottom of the page. */
-.enlines .enb{margin-block:-4px;padding-block:calc(.6cqi + 4px)}
+.enlines .enb{margin-block:-1cqi;padding-block:calc(.6cqi + 1cqi)}
 .enb.other{background:var(--paper);color:var(--muted);border-style:dashed;align-content:center;justify-items:center;cursor:default;font-style:italic}
 /* a neighbouring surah's greyed lines are a door into that surah */
 .enb.other.go{cursor:pointer;gap:.4cqi}
@@ -951,8 +969,19 @@ details[open]>summary .more::before{content:"▾ Close"}
   #scr2 .where .js{min-width:4.8rem;padding:.4rem .5rem .35rem}
   #scr2 .where .js .jar{font-size:1.05rem;line-height:1.7}
   #scr2 .where .js .jpg{font-size:.66rem}
-  #scr2 .pages{flex:none;min-height:0;align-items:start;padding-bottom:0}   /* height set by fitPage: it hugs the page */
-  #scr2 .page{width:var(--pw,100%);padding:.35rem .35rem .2rem}
+  /* The muṣḥaf reads the way it is printed to be read. The page takes the phone's whole width — that is what
+     makes the Arabic big, because every size on the page is a percentage of that width — and the fifteen rows
+     which follow from it make the page taller than the screen. So the pages stop being a sideways carousel and
+     become one vertical stack: you scroll down a page, and keep scrolling into the next.
+     Proximity, not mandatory: a page is taller than the viewport, so mandatory snapping has nowhere to rest
+     mid-page and would drag you off the line you are reading back to a page edge.
+     pan-y hands the browser the vertical scroll and keeps the horizontal gesture for the drag that opens the
+     next surah — which is now unambiguous, because nothing scrolls sideways any more. */
+  #scr2 .pages{flex:1;min-height:0;grid-auto-flow:row;gap:.5rem;padding-bottom:0;
+    overflow-x:hidden;overflow-y:auto;scroll-snap-type:y proximity;touch-action:pan-y;
+    overscroll-behavior-y:contain;scrollbar-width:none}
+  #scr2 .pages::-webkit-scrollbar{display:none}
+  #scr2 .page{width:var(--pw,100%);padding:.35rem .35rem .2rem;scroll-snap-align:start}
   #scr2 .pno{padding-top:.12rem;font-size:.68rem}
   #scr2 .pips button{height:7px}
   .pagebar{display:flex;align-items:center;gap:.5rem}
@@ -1256,7 +1285,7 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 /* The panel holds a real page now, so the rows are named: surah, number, the page itself, then the hint. */
 /* The panel centres its children, which would shrink this to the page’s own content width. */
 .peekpage{min-height:0;width:100%;justify-self:stretch;display:grid;align-content:center;justify-items:stretch;overflow:hidden}
-.peekpage .page{width:100%;max-width:100%;box-shadow:none;justify-self:stretch}
+.peekpage .page{width:100%;max-width:100%;box-shadow:none;justify-self:stretch;--ar:4.3cqi;--lnh:9.3cqi}
 .edgepeek{position:fixed;inset-block:0;width:78vw;max-width:26rem;z-index:8;display:grid;
   grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;align-content:stretch;
   justify-items:center;gap:.4rem;padding:1rem;background:var(--sheet);border-inline:1px solid var(--line);
@@ -1659,8 +1688,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=7c87192e8e"></script>
-<script src="app.js?v=7c87192e8e"></script>
+<script src="data/index.js?v=718453c605"></script>
+<script src="app.js?v=718453c605"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
