@@ -307,8 +307,8 @@ a.js:hover{border-color:var(--gold)}
 /* pan-y hands the browser the vertical scroll and keeps the horizontal gesture for us. With touch-action:auto a
    real finger can be claimed by the scroller before a single touchmove reaches JS — which is why the swipe
    worked under synthetic touches and not under a thumb. */
-.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y;position:relative;overflow:hidden}
-.secview #svbody{touch-action:pan-y}
+.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y pinch-zoom;position:relative;overflow:hidden}
+.secview #svbody{touch-action:pan-y pinch-zoom}
 /* Swiping across a section pulls the next one in over the reading area only: the back button and the section
    buttons above it stay where they are. What arrives is the section itself — its colour, its title and the start
    of its text — so the pull reads as the page moving rather than a blank panel sliding over it. */
@@ -977,9 +977,17 @@ details[open]>summary .more::before{content:"▾ Close"}
      mid-page and would drag you off the line you are reading back to a page edge.
      pan-y hands the browser the vertical scroll and keeps the horizontal gesture for the drag that opens the
      next surah — which is now unambiguous, because nothing scrolls sideways any more. */
+  /* pan-y, deliberately WITHOUT pinch-zoom: the app runs the pinch itself (see the touchstart
+     handler in src/surah.js) because display:standalone means iOS gives no page zoom at all in
+     the installed app. Listing pinch-zoom here would let the browser zoom too, on the
+     platforms where it can, and the two would compound. */
   #scr2 .pages{flex:1;min-height:0;grid-auto-flow:row;gap:.5rem;padding-bottom:0;
     overflow-x:hidden;overflow-y:auto;scroll-snap-type:y proximity;touch-action:pan-y;
     overscroll-behavior-y:contain;scrollbar-width:none}
+  /* Zoomed in, the page is wider than the column, so it has to be pannable sideways and the
+     30rem cap has to come off — otherwise --pw climbs and the page silently stops growing. */
+  #scr2 .pages.zoomed{overflow-x:auto;scroll-snap-type:none;touch-action:pan-x pan-y}
+  #scr2 .pages.zoomed .page{max-width:none;justify-self:start}
   #scr2 .pages::-webkit-scrollbar{display:none}
   #scr2 .page{width:var(--pw,100%);padding:.35rem .35rem .2rem;scroll-snap-align:start}
   #scr2 .pno{padding-top:.12rem;font-size:.68rem}
@@ -1688,8 +1696,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=718453c605"></script>
-<script src="app.js?v=718453c605"></script>
+<script src="data/index.js?v=9503df977c"></script>
+<script src="app.js?v=9503df977c"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
