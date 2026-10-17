@@ -539,6 +539,24 @@ a.js:hover{border-color:var(--gold)}
 .langtog button{all:unset;cursor:pointer;font-size:.78rem;font-weight:700;padding:.32rem .7rem;color:var(--muted);text-align:center}
 .langtog button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 .langtog button:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+/* The muṣḥaf's text size, in the bar under the pages: − / the size / +. The middle is a readout rather
+   than a third button, and it is where the default is made visible — fit-to-width is the muṣḥaf's own
+   proportion, the page as it is printed, so that step is the one with a NAME while every other step is a
+   percentage of it. A reader who has wandered off it can see at a glance that they have, and which way back.
+   min-width is held so the pill does not change size as the label does, which would shift the pips beside it. */
+.zoomtog{align-items:stretch}
+.zoomtog b{display:flex;align-items:center;justify-content:center;min-width:4.6em;padding:0 .3rem;
+  font:700 .68rem/1 var(--ui);color:var(--muted);border-inline:1px solid var(--line);white-space:nowrap}
+.zoomtog.deflt b{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+/* Kept to the height of the row it sits in. This bar is the last thing between the muṣḥaf and the bottom of
+   the screen, and the pages take what it leaves: every pixel the pill is taller than the page label beside it
+   is a pixel off the page. Hence a pill the size of the pips' row rather than a comfortable button. */
+.zoomtog button{padding:.06rem .5rem;font-size:.86rem;line-height:1.15}
+.zoomtog button:disabled{opacity:.3;cursor:default}
+.zoomtog[hidden]{display:none!important}
+/* Above 1099px the pages keep their sideways spread and their own width — fitPage bails there, so --pw and
+   therefore the whole size control has nothing to act on. */
+@media (min-width:1100px){.zoomtog{display:none!important}}
 .pno{text-align:center;font:500 .8rem/1 var(--ui);color:var(--muted);padding-top:.35rem;direction:ltr}
 .stage.test .w.sel:not(.shown){color:transparent;background:var(--hide)}
 /* Quiz keeps the section colours on the page, so the section boundaries stay visible while you answer */
@@ -988,6 +1006,12 @@ details[open]>summary .more::before{content:"▾ Close"}
      30rem cap has to come off — otherwise --pw climbs and the page silently stops growing. */
   #scr2 .pages.zoomed{overflow-x:auto;scroll-snap-type:none;touch-action:pan-x pan-y}
   #scr2 .pages.zoomed .page{max-width:none;justify-self:start}
+  /* While two fingers are down the stack is previewed with a scale() instead of a new --pw (see the pinch
+     handler: a --pw change re-lays-out every line of every page, 42–54ms on al-Baqarāh, where the transform
+     costs 0.1ms). The transform magnifies what the scroller already clips, which is the preview a native pinch
+     gives — but it also paints outside the scroller's box, so the wrapper clips it for the duration. */
+  #scr2 .pagewrap.pinching{overflow:clip}
+  #scr2 .pages.pinching{will-change:transform}
   #scr2 .pages::-webkit-scrollbar{display:none}
   #scr2 .page{width:var(--pw,100%);padding:.35rem .35rem .2rem;scroll-snap-align:start}
   #scr2 .pno{padding-top:.12rem;font-size:.68rem}
@@ -1640,7 +1664,7 @@ try {
         <div class="pages" id="pages"></div>
         <div class="secview" id="secview" hidden></div>
         <div class="simview" id="simview" hidden></div>
-        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div></div>
+        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div></div>
       </div>
      </div>
      <div class="screen" id="scr3">
@@ -1702,8 +1726,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=b93c43c1c2"></script>
-<script src="app.js?v=b93c43c1c2"></script>
+<script src="data/index.js?v=edbd4a031b"></script>
+<script src="app.js?v=edbd4a031b"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
