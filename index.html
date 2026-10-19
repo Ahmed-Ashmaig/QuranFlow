@@ -556,7 +556,36 @@ a.js:hover{border-color:var(--gold)}
 .zoomtog[hidden]{display:none!important}
 /* Above 1099px the pages keep their sideways spread and their own width — fitPage bails there, so --pw and
    therefore the whole size control has nothing to act on. */
-@media (min-width:1100px){.zoomtog{display:none!important}}
+@media (min-width:1100px){.zoomtog,.rdtog{display:none!important}}
+/* Reading mode's switch, the size pill's neighbour in the page bar. There is no settings screen, and this
+   belongs next to the control it changes the meaning of. One button, pressed = the reflowing reader.
+   Muṣḥaf stays the default and stays exactly as it is: a memoriser's mental image of a page is its word
+   placement, so the way out of it is a second surface, never a change to it. */
+.rdtog{all:unset;box-sizing:border-box;flex:none;cursor:pointer;white-space:nowrap;
+  font:700 .68rem/1.15 var(--ui);color:var(--muted);background:var(--sheet);
+  border:1.5px solid var(--line);border-radius:11px;padding:.26rem .45rem}
+.rdtog[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.rdtog:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+.rdtog[hidden]{display:none!important}
+/* Reading mode's English: the overlay's fifteen fixed grid rows cannot survive a reflowed column, so each
+   section's card becomes a block IN the flow, at the muṣḥaf line it owns (the same line-ownership buildEnglish
+   works out for the overlay). Hidden by default — only reading mode ever shows one. */
+.rdsec{all:unset;box-sizing:border-box;display:none;width:100%;direction:ltr;text-align:start;cursor:pointer;
+  margin-block:.6rem .4rem;padding:.45rem .6rem;background:var(--paper);border:1px solid var(--line);
+  border-inline-start-width:4px;border-radius:10px;font:400 .84rem/1.4 var(--ui);color:var(--muted)}
+.rdsec .rdh{display:flex;align-items:baseline;gap:.4rem;font-weight:700;font-size:.74rem;color:var(--muted)}
+.rdsec .rdh b{font-size:.9rem;color:var(--ink)}
+.rdsec em{display:block;font-style:normal;font-weight:700;font-size:.95rem;line-height:1.25;color:var(--ink);margin-top:.1rem}
+.rdsec p{margin:.2rem 0 0}
+.rdsec.on{border-color:var(--ink)}
+.rdsec.other{border-style:dashed;text-align:center;font-style:italic;cursor:default}
+.rdsec.other.go{cursor:pointer}
+.rdsec .rdgo{font-style:normal;font-weight:700;color:var(--green)}
+.rdsec:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.rdsec.b1{border-inline-start-color:var(--s1e)} .rdsec.b2{border-inline-start-color:var(--s2e)}
+.rdsec.b3{border-inline-start-color:var(--s3e)} .rdsec.b4{border-inline-start-color:var(--s4e)}
+.rdsec.b5{border-inline-start-color:var(--s5e)} .rdsec.b6{border-inline-start-color:var(--s6e)}
+.rdsec.b7{border-inline-start-color:var(--s7e)} .rdsec.b8{border-inline-start-color:var(--s8e)}
 .pno{text-align:center;font:500 .8rem/1 var(--ui);color:var(--muted);padding-top:.35rem;direction:ltr}
 .stage.test .w.sel:not(.shown){color:transparent;background:var(--hide)}
 /* Quiz keeps the section colours on the page, so the section boundaries stay visible while you answer */
@@ -1015,6 +1044,49 @@ details[open]>summary .more::before{content:"▾ Close"}
   #scr2 .pages::-webkit-scrollbar{display:none}
   #scr2 .page{width:var(--pw,100%);padding:.35rem .35rem .2rem;scroll-snap-align:start}
   #scr2 .pno{padding-top:.12rem;font-size:.68rem}
+
+  /* ---- Reading mode ----------------------------------------------------------------------------------
+     A SECOND reading surface, not a change to the muṣḥaf. The muṣḥaf's exact word placement is what
+     page-image memorisation depends on, so it stays the default and nothing below touches it: every rule
+     here needs .reading on #pages, which only the switch in the page bar puts there.
+     Everything is CSS over the SAME word spans — same DOM order, same data-a, same s1–s8, same tap and hold
+     handlers — so Learn, Practice, the veil, the reveals, the ayah menu and weak spots all keep working.
+     The Arabic reflows: the rows stop being fifteen nowrap flex lines and become one inline flow that wraps
+     into the column. A bigger size therefore means FEWER WORDS PER LINE, never a wider line, so no size step
+     can produce anything to pan sideways — which is the whole point of the mode.
+     The size is rem, not cqi: cqi is a percentage of the page's own width and would ignore the reader's own
+     browser text setting entirely. 1.25rem is the muṣḥaf's own step at a 390px phone (19.9px), so the seven
+     steps of the pill land on the same ladder of sizes in both modes. */
+  #scr2 .pages.reading{display:block;gap:0;overflow-x:hidden;overflow-y:auto;scroll-snap-type:none;touch-action:pan-y}
+  #scr2 .pages.reading .page{width:100%;max-width:none;justify-self:stretch;display:flex;flex-direction:column;
+    border:0;background:transparent;box-shadow:none;padding:0 .3rem .5rem;scroll-snap-align:none;
+    --ar:calc(1.25rem * var(--rz,1))}
+  #scr2 .pages.reading .arlines{font:400 var(--ar)/2.15 var(--q);text-align:start;overflow-wrap:break-word}
+  #scr2 .pages.reading .ln{display:inline;white-space:normal;min-height:0;gap:0;transform:none!important}
+  /* A row's words were flex items with a gap and no white space between them. Inline, there is neither a gap
+     nor — more important — any break opportunity at all, so the whole row would refuse to wrap. Each word and
+     each row therefore ends in a ZERO-WIDTH space: zero-width, not a real one, because a real space would sit
+     inside the word's own background box and the section colours, the veil and the hidden-word blocks would
+     all run into each other. The visible gap is margin instead, which is outside that box. */
+  #scr2 .pages.reading .w{margin-inline:.055em}
+  #scr2 .pages.reading .w::after{content:"\200B"}
+  #scr2 .pages.reading .ln::after{content:"\200B";position:static;inset:auto;width:auto;background:none}
+  /* The per-line colour bar down the edge and the dotted section rule both say "this line": in a reflowed
+     column a row is no longer a line, so they come off. The section colour still reads from the words. */
+  #scr2 .pages.reading .ln.lnsep::before{content:none}
+  #scr2 .pages.reading .ln.center{display:block;text-align:center;margin-block:.35em}
+  /* The overlay presumes fifteen fixed rows (.enlines' grid) and a reflowed column has no rows at all. */
+  #scr2 .pages.reading .enlines{display:none!important}
+  #scr2 .pages.reading.en .rdsec,#scr2 .pages.reading .rdsec.other{display:block}
+  /* Page structure goes soft, not absent: [page, line] is still the app's universal coordinate and pos() says
+     "p.563 line 7", so every page keeps a divider carrying its number — quranwbw's number between two rules,
+     moved to the top of the page it names so the reader always knows which one they are on. */
+  #scr2 .pages.reading .pno{order:-1;display:flex;align-items:center;gap:.5rem;padding:.5rem 0 .3rem;font-size:.68rem}
+  #scr2 .pages.reading .pno::before,#scr2 .pages.reading .pno::after{content:"";flex:1;height:1px;background:var(--line)}
+  /* Practice with the rest hidden: the overlay's opaque "Surah X" block is what kept a neighbouring surah on
+     the page from reading through, and it is gone here, so its words are covered the same way the surah's own
+     are. The card in the flow is what names it. */
+  #scr2 .pages.reading.ar.hidenbr .w.o{color:transparent;background:var(--hide);border-radius:3px}
   #scr2 .pips button{height:7px}
   .pagebar{display:flex;align-items:center;gap:.5rem}
   .pagebar .pips{flex:1}
@@ -1664,7 +1736,7 @@ try {
         <div class="pages" id="pages"></div>
         <div class="secview" id="secview" hidden></div>
         <div class="simview" id="simview" hidden></div>
-        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div></div>
+        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div><button type="button" class="rdtog" id="rdtog" aria-pressed="false" hidden>Reading</button></div>
       </div>
      </div>
      <div class="screen" id="scr3">
@@ -1726,8 +1798,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=edbd4a031b"></script>
-<script src="app.js?v=edbd4a031b"></script>
+<script src="data/index.js?v=cd474de2de"></script>
+<script src="app.js?v=cd474de2de"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
