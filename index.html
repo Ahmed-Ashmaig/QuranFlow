@@ -1061,7 +1061,15 @@ details[open]>summary .more::before{content:"▾ Close"}
   #scr2 .pages.reading .page{width:100%;max-width:none;justify-self:stretch;display:flex;flex-direction:column;
     border:0;background:transparent;box-shadow:none;padding:0 .3rem .5rem;scroll-snap-align:none;
     --ar:calc(1.25rem * var(--rz,1))}
-  #scr2 .pages.reading .arlines{font:400 var(--ar)/2.15 var(--q);text-align:start;overflow-wrap:break-word}
+  /* Never break a word. overflow-wrap:break-word here split Arabic words across lines mid-letter,
+     which severs the joining and reads as a word chopped in half — the "words cut off when you zoom
+     in" report. Words wrap whole or not at all; measured, the widest real word at the largest size is
+     about 194px against a 372px column, so nothing needs breaking to fit. */
+  #scr2 .pages.reading .arlines{font:400 var(--ar)/2.15 var(--q);text-align:start;
+    overflow-wrap:normal;word-break:normal;hyphens:none}
+  /* A word and the ayah medallion appended to it are two inline boxes, so the line could break
+     between them and leave a number stranded at the start of the next line. They travel together. */
+  #scr2 .pages.reading .arlines .w{white-space:nowrap}
   #scr2 .pages.reading .ln{display:inline;white-space:normal;min-height:0;gap:0;transform:none!important}
   /* A row's words were flex items with a gap and no white space between them. Inline, there is neither a gap
      nor — more important — any break opportunity at all, so the whole row would refuse to wrap. Each word and
