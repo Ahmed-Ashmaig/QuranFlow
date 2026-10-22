@@ -563,7 +563,9 @@ a.js:hover{border-color:var(--gold)}
    placement, so the way out of it is a second surface, never a change to it. */
 .rdtog{all:unset;box-sizing:border-box;flex:none;cursor:pointer;white-space:nowrap;
   font:700 .68rem/1.15 var(--ui);color:var(--muted);background:var(--sheet);
-  border:1.5px solid var(--line);border-radius:11px;padding:.26rem .45rem}
+  border:1.5px solid var(--line);border-radius:11px;padding:.26rem .45rem;
+  /* fit-content with a floor: the label sets the width, and a squeeze cannot take it below this */
+  min-width:max-content}
 .rdtog[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
 .rdtog:focus-visible{outline:2px solid var(--green);outline-offset:1px}
 .rdtog[hidden]{display:none!important}
@@ -1096,7 +1098,14 @@ details[open]>summary .more::before{content:"▾ Close"}
      are. The card in the flow is what names it. */
   #scr2 .pages.reading.ar.hidenbr .w.o{color:transparent;background:var(--hide);border-radius:3px}
   #scr2 .pips button{height:7px}
-  .pagebar{display:flex;align-items:center;gap:.5rem}
+  /* The right-most control used to sit flush against the bar's edge, so at a larger system text
+     size — iOS accessibility text grows every rem — it was the first thing to be cut off. The row
+     wraps instead of clipping, and keeps a little room at the end. It only ever takes the second
+     line when the controls genuinely do not fit, so the muṣḥaf keeps its height in the normal case. */
+  .pagebar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;row-gap:.3rem;
+    padding-inline-end:.15rem}
+  /* The pips are the one thing here that can afford to give up width. */
+  #scr2 .pagebar .pips{min-width:2.5rem}
   .pagebar .pips{flex:1}
   .pagetxt{font-size:.72rem;white-space:nowrap}
   #scr3{min-height:100%}
