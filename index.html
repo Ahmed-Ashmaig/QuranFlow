@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>QuranFlow</title>
 <meta name="description" content="Memorize the Quran surah by surah: sections on the real muṣḥaf pages, meanings, deeper explanations, self-tests and weak-spot practice.">
 <meta name="theme-color" content="#F6F1E4" media="(prefers-color-scheme: light)">
@@ -53,7 +53,7 @@ if (location.hostname === "ahmed-ashmaig.github.io") { var gc = document.createE
   --hide:#E6DCC6; --focusw:#F5E3A6; --red:#B3261E; --redsoft:#F4D3CF; --rep:#6A3FB5; --repsoft:#ECE3FA;
   --ui:"Alegreya Sans","Gill Sans","Segoe UI",system-ui,sans-serif;
   --display:"Alegreya",Georgia,"Times New Roman",serif;
-  --q:"Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic",serif;
+  --q:"KFGQPC Hafs","Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic",serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#12110D; --sheet:#1B1A15; --ink:#ECE5D2; --muted:#A89F8A; --line:#34302A; --gold:#CDAE72; --green:#72C3A0;
@@ -68,6 +68,10 @@ if (location.hostname === "ahmed-ashmaig.github.io") { var gc = document.createE
   --hide:#2C2922; --focusw:#5A4A1E; --red:#F08A80; --redsoft:#4A2521; --rep:#B89CF0; --repsoft:#33284A;
 }
 *{box-sizing:border-box}
+/* Pinch belongs to the muṣḥaf box alone (its own handler, in surah.js): the browser must never zoom the whole screen,
+   bar, tabs and borders with it. pan-x pan-y leaves every scroll alone and takes away only page zoom and double-tap
+   zoom; iOS Safari also needs its gesture events refused, which boot.js does. */
+html{touch-action:pan-x pan-y}
 body{background:var(--paper);color:var(--ink);font:400 1rem/1.5 var(--ui);padding-inline:clamp(16px,3vw,40px);padding-block:0 3rem;-webkit-text-size-adjust:100%}
 .app{max-width:86rem;margin:0 auto;display:grid;gap:1.1rem;grid-template-columns:minmax(0,1fr)}
 #surahBody,#juzList,.juzblock{grid-template-columns:minmax(0,1fr)}
@@ -279,7 +283,9 @@ a.js:hover{border-color:var(--gold)}
 .w.o.go:hover{opacity:.55}
 .w.s.dim{opacity:.3;background:transparent}
 .w.focus{background:var(--focusw)!important;opacity:1!important;box-shadow:0 0 0 1px var(--gold)}
-.e{display:inline-flex;align-items:center;justify-content:center;min-width:1.35em;height:1.35em;border:1px solid var(--gold);border-radius:50%;font-size:.62em;line-height:1;color:var(--gold);padding-inline:.15em;box-sizing:border-box;padding-block-end:.26em}
+/* The number keeps Amiri's plain digits: the Hafs face draws its own medallion round a digit, which would sit inside
+   this circle, and the circle is what carries state (saved, weak, current, bookmark). */
+.e{font-family:"Amiri Quran","Amiri",serif;display:inline-flex;align-items:center;justify-content:center;min-width:1.35em;height:1.35em;border:1px solid var(--gold);border-radius:50%;font-size:.62em;line-height:1;color:var(--gold);padding-inline:.15em;box-sizing:border-box;padding-block-end:.26em}
 /* The surah header, the way a mushaf draws it: a band across the full width of the text, a double rule with
    a gap between the lines, and a small lozenge closing each end. Amiri's ink sits low in its em box, so the
    bottom padding is the larger of the two — without it the name rides down onto the inner rule. */
@@ -307,8 +313,8 @@ a.js:hover{border-color:var(--gold)}
 /* pan-y hands the browser the vertical scroll and keeps the horizontal gesture for us. With touch-action:auto a
    real finger can be claimed by the scroller before a single touchmove reaches JS — which is why the swipe
    worked under synthetic touches and not under a thumb. */
-.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y pinch-zoom;position:relative;overflow:hidden}
-.secview #svbody{touch-action:pan-y pinch-zoom}
+.secview{display:flex;flex-direction:column;gap:.35rem;min-width:0;min-height:0;align-items:stretch;touch-action:pan-y;position:relative;overflow:hidden}
+.secview #svbody{touch-action:pan-y}
 /* Swiping across a section pulls the next one in over the reading area only: the back button and the section
    buttons above it stay where they are. What arrives is the section itself — its colour, its title and the start
    of its text — so the pull reads as the page moving rather than a blank panel sliding over it. */
@@ -623,6 +629,13 @@ a.js:hover{border-color:var(--gold)}
 .ptitle{font:700 1.45rem/1.2 var(--display);text-wrap:balance;margin:0}
 .gist{font-size:1.02rem;line-height:1.5}
 .meaning{font-size:1rem;color:var(--muted)}
+/* the plain-English layer: a retelling, its one-line point, and the "Know this first" list (STYLE_PLAIN.md) */
+.point{border-inline-start:3px solid var(--gold);padding:.35rem .7rem;background:var(--paper);border-radius:0 6px 6px 0}
+.point b{display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.know{background:var(--paper);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0}
+.know .lbl{display:block;font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.know ul{margin:.35rem 0 0;padding-inline-start:1.1rem;display:grid;gap:.35rem}
+.rdsec p.point{margin-top:.45rem}
 .points{list-style:none;margin:0;padding:0;display:grid;gap:.3rem;font-size:.92rem}
 .points li{display:grid;grid-template-columns:3.4rem 1fr;gap:.5rem}
 .points b{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500;white-space:nowrap}
@@ -1441,7 +1454,7 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 /* Theme and context, raised from the chip that names where you are. Same in Learn and Practice, so the button
    behaves the same wherever it is pressed. */
 .ctxsheet{position:fixed;z-index:12;inset-inline:0;bottom:0;max-height:76vh;display:grid;
-  grid-template-rows:auto minmax(0,1fr);background:var(--sheet);border-top:2px solid var(--ink);
+  grid-template-rows:auto minmax(0,1fr) auto;background:var(--sheet);border-top:2px solid var(--ink);
   border-radius:14px 14px 0 0;box-shadow:0 -14px 40px rgba(0,0,0,.24)}
 .ctxsheet[hidden]{display:none!important}
 .ctxhead{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.7rem .9rem .5rem;
@@ -1449,6 +1462,12 @@ mark.simdiff{background:var(--repsoft);color:var(--rep);border-radius:3px;paddin
 .ctxhead h2{margin:0;font:700 1.02rem/1.2 var(--display);color:var(--ink)}
 .ctxbody{overflow-y:auto;padding:.7rem .9rem 1.1rem;display:grid;gap:.6rem;overscroll-behavior:contain}
 .ctxbody .sub{font-size:.82rem;color:var(--muted)}
+/* Section stepping, pinned under the scrolling text so the buttons never move. Muṣḥaf order: next on the left. */
+.ctxnav{display:flex;justify-content:space-between;gap:.5rem;padding:.55rem .9rem calc(.55rem + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line)}
+.ctxnav:empty{display:none}
+.ctxnav button{flex:1 1 0;max-width:48%}
+.ctxnav span{flex:1 1 0;max-width:48%}
 /* One block per section on the page, divided so it is clear where one ends and the next begins. */
 .ctxsec{display:grid;gap:.45rem;padding-block:.7rem}
 .ctxsec + .ctxsec{border-top:1px solid var(--line)}
@@ -1769,6 +1788,7 @@ try {
         <button type="button" class="svback" id="ctxClose">Close</button></div>
       <div class="ctxbody"><div class="sub" id="ctxSub"></div>
         <p class="theme" id="ctxTheme"></p><div class="whybody" id="ctxWhy"></div></div>
+      <div class="ctxnav" id="ctxNav"></div>
     </div>
     <div class="edgepeek" id="edgePeek" hidden aria-hidden="true"><b></b><span></span><div class="peekpage"></div><i></i></div>
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
@@ -1815,8 +1835,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=c313e7724a"></script>
-<script src="app.js?v=c313e7724a"></script>
+<script src="data/index.js?v=65deeb3818"></script>
+<script src="app.js?v=65deeb3818"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
