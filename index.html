@@ -996,7 +996,10 @@ details[open]>summary .more::before{content:"▾ Close"}
   body.in-surah .app{gap:.3rem}
   /* screen 2: the section row and page bar take what they need; the page gets the rest, sized to fit (fitPage) */
   /* one screen, no vertical scrolling: the page takes whatever the rows above and below leave it */
-  #scr2{height:100%;display:flex;flex-direction:column;gap:.25rem;padding-bottom:max(.25rem,env(safe-area-inset-bottom));position:relative}
+  /* --bar already includes the bottom bar's gap from the edge, safe area and all (setTopbar reads its computed
+     bottom), so the safe area is only added here when there is no bar to have counted it — before, a notched
+     iPhone got it twice: a ~34px empty strip between the page bar and the bottom bar. */
+  #scr2{height:100%;display:flex;flex-direction:column;gap:.25rem;padding-bottom:max(.25rem,calc(env(safe-area-inset-bottom) - var(--bar,0px)));position:relative}
   #scr3{display:none}
   .juzchip{display:inline-flex}
   /* the whole header is one row — juz chip, surah name, notes caret — so the muṣḥaf keeps the height.
@@ -1193,6 +1196,61 @@ details[open]>summary .more::before{content:"▾ Close"}
   .points li{grid-template-columns:3rem 1fr}
   .neigh{font-size:.8rem}
   .navbtns a{padding:.25rem .55rem}
+
+  /* ---- Full screen (Practice, the ⤢ in the page bar; src/surah.js IMM explains the rules) -----------------
+     body.imm = the option is on here; body.imm-hid = the bars are tucked away right now. Turning it on is the
+     one layout change: the scroller becomes the whole screen and the bars float over it, padded clear of them
+     by the measured heights (written to #pages, never to :root). Hiding and showing after that change only
+     transform and opacity, so the muṣḥaf never moves or resizes under the finger. */
+  body.imm #pages{position:fixed;z-index:1;top:0;bottom:0;margin:0;
+    left:max(4px,env(safe-area-inset-left));right:max(4px,env(safe-area-inset-right));
+    height:auto;max-height:none;box-sizing:border-box;scroll-snap-type:none}
+  body.imm .topbar,body.imm #pbar,body.imm #nowline,body.imm .pagebar,body.imm #anav,body.imm #dock,#immTop,#immBot{
+    transition:transform .24s cubic-bezier(.2,.75,.25,1);will-change:transform}
+  body.imm .topbar,body.imm #pbar,body.imm #nowline{position:relative;z-index:8}
+  body.imm .topbar{position:sticky}
+  body.imm #anav,body.imm #dock{z-index:8}
+  body.imm .pagebar{position:fixed;z-index:8;left:max(4px,env(safe-area-inset-left));right:max(4px,env(safe-area-inset-right));
+    bottom:100px;background:var(--paper)}
+  /* paper behind each group of bars, so the gaps between them never show the page scrolling underneath */
+  #immTop,#immBot{display:none}
+  body.imm #immTop,body.imm #immBot{display:block;position:fixed;left:0;right:0;z-index:7;background:var(--paper);pointer-events:none}
+  body.imm #immTop{top:0}
+  body.imm #immBot{bottom:0}
+  body.imm.imm-hid .topbar,body.imm.imm-hid #pbar,body.imm.imm-hid #nowline,body.imm.imm-hid #immTop,
+  body.imm.imm-hid .pagebar,body.imm.imm-hid #immBot{transform:translate3d(0,var(--imm-dy,0px),0);pointer-events:none}
+  body.imm.imm-hid #anav,body.imm.imm-hid #dock{transform:translate3d(-50%,var(--imm-dy,0px),0);pointer-events:none}
+  /* measuring: the bars where they rest, at once */
+  body.imm-measure .topbar,body.imm-measure #pbar,body.imm-measure #nowline,body.imm-measure .pagebar,
+  body.imm-measure #anav,body.imm-measure #dock{transition:none!important}
+  body.imm-measure.imm-hid .topbar,body.imm-measure.imm-hid #pbar,body.imm-measure.imm-hid #nowline,
+  body.imm-measure.imm-hid .pagebar{transform:none!important}
+  body.imm-measure.imm-hid #anav,body.imm-measure.imm-hid #dock{transform:translateX(-50%)!important}
+  /* What stays: one slim line, like Quran Majeed's "‹ Juz 16 303 Al-Kahf". Fixed size (contain:strict), so its
+     text changing never lays anything else out. Tap it and the bars come back. */
+  #immSlim{display:none}
+  body.imm #immSlim{all:unset;box-sizing:border-box;display:grid;grid-template-columns:2.2rem 1fr auto 1fr 2.2rem;align-items:center;
+    position:fixed;z-index:9;top:0;left:0;right:0;height:calc(30px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);
+    contain:strict;background:var(--paper);border-bottom:1px solid var(--line);cursor:pointer;
+    font:600 .8rem/1 var(--ui);color:var(--ink);font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;
+    opacity:0;transform:translate3d(0,-100%,0);pointer-events:none;
+    transition:opacity .24s cubic-bezier(.2,.75,.25,1),transform .24s cubic-bezier(.2,.75,.25,1)}
+  body.imm.imm-hid #immSlim{opacity:1;transform:none;pointer-events:auto}
+  body.imm #immSlim:focus-visible{outline:2px solid var(--green);outline-offset:-2px}
+  #immSlim .chev{justify-self:center;font-size:.95rem;color:var(--muted)}
+  #immSlim .l{justify-self:end;padding-inline-end:.9rem}
+  #immSlim .c{color:var(--muted)}
+  #immSlim .r{justify-self:start;padding-inline-start:.9rem}
+  /* the switch, beside the size pill */
+  .immtog{all:unset;flex:none;cursor:pointer;display:flex;align-items:center;justify-content:center;width:2rem;height:1.75rem;
+    box-sizing:border-box;border:1px solid var(--ink);border-radius:11px;background:var(--sheet);color:var(--ink);font-size:1rem;line-height:1}
+  .immtog[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+  .immtog:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+  .immtog[hidden]{display:none!important}
+}
+@media (min-width:1100px){.immtog,#immSlim,#immTop,#immBot{display:none!important}}
+@media (prefers-reduced-motion:reduce){
+  body.imm .topbar,body.imm #pbar,body.imm #nowline,body.imm .pagebar,body.imm #anav,body.imm #dock,#immTop,#immBot,body.imm #immSlim{transition:none!important}
 }
 /* while a hold is landing, nothing anywhere is selectable: iOS would otherwise select the word that ends up
    under the finger when the view changes beneath it */
@@ -1681,6 +1739,8 @@ try {
 } catch (e) {}
 </script>
 <div class="flip" id="flip" aria-hidden="true" hidden></div>
+<div id="immTop" aria-hidden="true"></div><div id="immBot" aria-hidden="true"></div>
+<button type="button" id="immSlim" aria-label="Show the bars" aria-hidden="true" tabindex="-1"><span class="chev" aria-hidden="true">⌄</span><span class="l"></span><span class="c"></span><span class="r"></span><span></span></button>
 <div class="app" id="app">
   <nav class="topbar" aria-label="App">
     <a class="homebtn here" id="homebtn" href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>All surahs</a>
@@ -1774,7 +1834,7 @@ try {
         <div class="pages" id="pages"></div>
         <div class="secview" id="secview" hidden></div>
         <div class="simview" id="simview" hidden></div>
-        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div></div>
+        <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div><button type="button" class="immtog" id="immtog" aria-pressed="false" aria-label="Full screen" hidden>⤢</button></div>
       </div>
      </div>
      <div class="screen" id="scr3">
@@ -1835,8 +1895,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=d051c2d8e9"></script>
-<script src="app.js?v=d051c2d8e9"></script>
+<script src="data/index.js?v=0c03b8498d"></script>
+<script src="app.js?v=0c03b8498d"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
