@@ -257,7 +257,7 @@ a.js:hover{border-color:var(--gold)}
 .pips button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .pagetxt{font-size:.8rem;color:var(--muted);text-align:center}
 .pages{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;direction:rtl;display:grid;grid-auto-flow:column;grid-auto-columns:100%;gap:.8rem;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.4rem;-webkit-overflow-scrolling:touch}
-.page{direction:rtl;background:var(--sheet);border:1px solid var(--line);padding:.9rem .9rem .5rem;container-type:inline-size;scroll-snap-align:center;justify-self:center;width:100%;max-width:30rem;
+.page{direction:rtl;background:var(--paper);border:1px solid var(--line);padding:.9rem .9rem .5rem;container-type:inline-size;scroll-snap-align:center;justify-self:center;width:100%;max-width:30rem;
   /* The whole page geometry is these two numbers, and they live here only. The .ln rule, the English overlay's
      fifteen grid rows and fitPage all read them, so they can no longer drift apart — they used to be three
      separate literals (4.3cqi, 9.3cqi, 1.395) and a mismatch misaligns every English card over the Arabic with
@@ -671,6 +671,8 @@ a.js:hover{border-color:var(--gold)}
 .anav-btns{display:grid;gap:.4rem}
 .anavrow{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:.4rem}
 .anavrow:empty,.anavrow.off{display:none}
+#a-rowgo{direction:rtl}   /* next on the left, as in the muṣḥaf */
+#a-rowgo > *{direction:ltr}
 .anav-btns:has(> .anavrow.off) > .anavrow:not(.off) .abtn{min-height:5.3rem}
 /* The label keeps one line and ellipsises if it must; the ayah it leads to sits underneath it. */
 /* NB: a bare .lbl elsewhere in this sheet is uppercase and muted; button labels must not inherit that. */
@@ -1794,18 +1796,16 @@ try {
     <nav class="anav" id="anav" aria-label="Step through ayat" hidden>
       <button type="button" class="anav-where" id="a-where" aria-label="Show the current ayah"><b id="a-num"></b></button>
       <div class="anav-btns">
-        <!-- Thumb order, not mushaf order: a phone is held in the right hand, so the button pressed over and
-             over - "Peek at next word", "Reveal next" - sits on the right where the thumb already rests, and
-             the chevrons follow it outward. The mushaf's own right-to-left order still governs the pages
-             and the surah buttons in the top bar. -->
+        <!-- Muṣḥaf order (Ahmed, 2026-11-06): the step row reads right to left like the pages, so "next" is
+             always on the left and "previous" on the right; the row is flipped in CSS, the markup keeps prev first. -->
         <div class="anavrow" id="a-rowdo">
           <button type="button" class="abtn mark" id="a-mark">Mark weak spot</button>
           <button type="button" class="abtn stuck" id="a-stuck">Peek at next word</button>
         </div>
         <div class="anavrow" id="a-rowgo">
-          <button type="button" class="abtn prev" id="a-prev">‹ Previous ayah</button>
+          <button type="button" class="abtn prev" id="a-prev">Previous ayah ›</button>
           <span class="abtn here" id="a-here" aria-current="page" hidden></span>
-          <button type="button" class="abtn next" id="a-next">Next ayah ›</button>
+          <button type="button" class="abtn next" id="a-next">‹ Next ayah</button>
         </div>
       </div>
       <button type="button" class="eyechip anav-eyechip" id="a-eyeall" aria-pressed="false"></button>
@@ -1835,8 +1835,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=37dab779b1"></script>
-<script src="app.js?v=37dab779b1"></script>
+<script src="data/index.js?v=08c11baa1e"></script>
+<script src="app.js?v=08c11baa1e"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
