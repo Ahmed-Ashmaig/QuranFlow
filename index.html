@@ -355,6 +355,11 @@ a.js:hover{border-color:var(--gold)}
 .sva p{margin:.2rem 0 0;font-size:.88rem;line-height:1.45;color:var(--muted)}
 .sva.is-stuck{box-shadow:inset 3px 0 0 var(--red)}
 .svfoot{display:flex;gap:.4rem;justify-content:space-between;padding-top:.2rem}
+/* Learn › Ayah by ayah: the section view's cards for the whole surah, a section heading before each run of ayat */
+.ayview .avhead{margin-top:.5rem}
+.pagewrap:has(> #ayview:not([hidden])) > .pagebar{display:none!important}   /* no pages to count or size in the list */
+.ayview .avhead:first-child,.ayview .know + .avhead{margin-top:0}
+.ayview .avhead:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .pages.en .enlines,.pages.ar .enlines{display:grid}
 /* Arabic page: the English blocks wait out of sight until you tap a section */
 .pages.ar .enb{visibility:hidden;pointer-events:none}
@@ -720,6 +725,12 @@ a.js:hover{border-color:var(--gold)}
 .ltabs button{flex:1;min-width:0;border:0;background:none;border-radius:11px;padding:.45rem .5rem;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--muted);white-space:nowrap}
 .ltabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
 .ltabs button i{font-style:normal;display:inline-block;min-width:1.3em;padding-inline:.3em;margin-inline-start:.2em;border-radius:999px;background:var(--red);color:var(--sheet);font-size:.75rem;line-height:1.5;text-align:center}
+/* Memorize › Test: where the spot comes from, Random or your weak spots (a smaller switch under the tabs) */
+.testsw{display:flex;gap:2px;padding:2px;margin-top:.3rem;border:1.5px solid var(--ink);border-radius:10px;width:max-content;max-width:100%;margin-inline:auto}
+.testsw button{all:unset;box-sizing:border-box;cursor:pointer;font:700 .8rem/1 var(--ui);color:var(--ink);padding:.35rem .8rem;border-radius:8px;white-space:nowrap}
+.testsw button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.testsw button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.testsw button i{font-style:normal;display:inline-block;min-width:1.2em;padding-inline:.3em;margin-inline-start:.25em;border-radius:999px;background:var(--red);color:var(--sheet);font-size:.7rem;line-height:1.5;text-align:center}
 .lbody{display:grid;gap:.9rem}
 /* Ayah tab: the ayah before and after are buttons that step, like the bar */
 .ctxbtn{all:unset;box-sizing:border-box;display:block;cursor:pointer;border-radius:8px}
@@ -1745,9 +1756,10 @@ try {
   <nav class="topbar" aria-label="App">
     <a class="homebtn here" id="homebtn" href="#"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>All surahs</a>
     <div class="crumb" id="crumb"></div>
-    <div class="feat modetog" id="feat" role="group" aria-label="Learn or practice" hidden>
+    <div class="feat modetog" id="feat" role="group" aria-label="Learn, memorize or recite" hidden>
       <button type="button" id="f-learn" data-mode="learn" aria-pressed="true">Learn</button>
-      <button type="button" id="f-practice" data-mode="practice" aria-pressed="false">Practice</button>
+      <button type="button" id="f-practice" data-mode="practice" aria-pressed="false">Memorize</button>
+      <button type="button" id="f-recite" data-mode="recite" aria-pressed="false">Recite</button>
     </div>
     <div class="navbtns" id="navbtns"></div>
   </nav>
@@ -1833,6 +1845,7 @@ try {
       <div class="pagewrap">
         <div class="pages" id="pages"></div>
         <div class="secview" id="secview" hidden></div>
+        <div class="secview ayview" id="ayview" hidden></div>
         <div class="simview" id="simview" hidden></div>
         <div class="pagebar"><div class="pips" id="pagepips" role="group" aria-label="Pages"></div><div class="pagerow"><div class="pagetxt" id="pagetxt"></div><button type="button" class="anav-eye" id="a-eye" aria-pressed="false" hidden>Reveal all</button></div><div class="langtog zoomtog" id="zoomtog" role="group" aria-label="Text size" hidden><button type="button" id="z-less" aria-label="Smaller text">−</button><b id="z-now" aria-live="polite">Muṣḥaf</b><button type="button" id="z-more" aria-label="Larger text">+</button></div><button type="button" class="immtog" id="immtog" aria-pressed="false" aria-label="Full screen" hidden>⤢</button></div>
       </div>
@@ -1895,8 +1908,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=4aac96fff8"></script>
-<script src="app.js?v=4aac96fff8"></script>
+<script src="data/index.js?v=66890d305c"></script>
+<script src="app.js?v=66890d305c"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
