@@ -638,6 +638,20 @@ a.js:hover{border-color:var(--gold)}
 .point{border-inline-start:3px solid var(--gold);padding:.35rem .7rem;background:var(--paper);border-radius:0 6px 6px 0}
 .point b{display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
 .know{background:var(--paper);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0}
+/* The lessons layer (STYLE_LESSONS.md): the section's lesson and where it meets your life, set apart from the
+   retelling above it in the surah's gold, never folded away. */
+.lesson{margin:.6rem 0 .2rem;padding:.6rem .8rem;border-inline-start:3px solid var(--gold);background:var(--paper);border-radius:0 8px 8px 0;display:grid;gap:.35rem;text-align:start}
+.lesson .lbl,.slesson .lbl{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.lesson p{margin:0}
+.lesson .lhead{font-weight:700;color:var(--ink);line-height:1.35}
+.lesson .life{border-top:1px dashed var(--line);padding-top:.35rem;display:grid;gap:.15rem}
+.lesson .llink{font-size:.88em;color:var(--muted)}
+.rdsec .lesson{margin-top:.45rem}
+.slesson{margin:.6rem 0;padding:.7rem .9rem;background:var(--paper);border-radius:8px;border:1px solid var(--line);display:grid;gap:.4rem;text-align:start}
+.slesson p{margin:0}
+.slesson .smsg{font-weight:600}
+.slesson h3{font-size:.85rem;margin:.4rem 0 .2rem}
+.slesson ul{margin:0;padding-inline-start:1.1rem;display:grid;gap:.25rem}
 .know .lbl{display:block;font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
 .know ul{margin:.35rem 0 0;padding-inline-start:1.1rem;display:grid;gap:.35rem}
 .rdsec p.point{margin-top:.45rem}
@@ -1923,8 +1937,8 @@ try {
   <div class="tcard" id="tCard" hidden></div>
 </div>
 
-<script src="data/index.js?v=44161594d5"></script>
-<script src="app.js?v=44161594d5"></script>
+<script src="data/index.js?v=98d57cd23f"></script>
+<script src="app.js?v=98d57cd23f"></script>
 
 <script>
 if ("serviceWorker" in navigator && location.protocol === "https:") {
